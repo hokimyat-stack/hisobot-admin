@@ -149,10 +149,7 @@ main{flex:1;display:flex;overflow:hidden}
 .mGaler img{height:130px;border-radius:9px;cursor:zoom-in;background:var(--fon)}
 .stageBlok .tavsifTxt{background:var(--fon);border-radius:9px;padding:11px;font-size:12.5px;line-height:1.6;margin:6px 0}
 .stageBlok .meta{color:var(--kul);font-size:11.5px}
-.stageAmallar{display:flex;gap:8px;margin-top:9px}
-.stageAmallar button{flex:1;padding:9px;border-radius:8px;font-weight:700;font-size:12.5px}
-.tasdiqB{background:var(--yashil);color:#fff}
-.radB{background:#FCE9E7;color:var(--qizil)}
+
 #mXarita{height:180px;margin:8px 0;border-radius:10px;border:1px solid var(--chiziq)}
 #zoomFon{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:60;cursor:zoom-out}
 #zoomFon img{max-width:96vw;max-height:96vh;border-radius:8px}
@@ -468,20 +465,15 @@ let mXarita = null;
 function modalOch(id) {
   const h = joriyHisobotlar.find(x => x.id === id);
   if (!h) return;
-  const boshqaraOladi = SESSIYA.rol === 'superadmin' || SESSIYA.rol === 'admin';
   const stage = (prefix, nom, vaqt, tavsif, lat, lng, rasmlar, status, sabab) => {
     if (!vaqt) return `<div class="stageBlok" style="opacity:.5"><h4>${nom} <span class="stTag" style="background:var(--fon);color:var(--kul)">Hali yuklanmagan</span></h4></div>`;
     const stTagRang = status==='TASDIQLANDI' ? 'background:#E2F5EA;color:var(--yashil)' : status==='RAD ETILDI' ? 'background:#FCE9E7;color:var(--qizil)' : 'background:#FFF4DC;color:#8A6200';
     return `<div class="stageBlok">
-      <h4>${nom} <span class="stTag" style="${stTagRang}">${status}</span></h4>
+      <h4>${nom} <span class="stTag" style="${stTagRang}">${status||'TASDIQLANDI'}</span></h4>
       <div class="meta">${vaqt}${lat?' · GPS: '+(+lat).toFixed(5)+', '+(+lng).toFixed(5):''}</div>
       <div class="tavsifTxt">${tavsif}</div>
       <div class="mGaler">${(rasmlar||[]).map(r=>`<img src="${rasmURL(r,500)}" onclick="zoom('${rasmURL(r,1500)}')" loading="lazy">`).join('')}</div>
       ${sabab ? `<div style="color:var(--qizil);font-size:12px;margin-top:4px">⚠ ${sabab}</div>` : ''}
-      ${boshqaraOladi ? `<div class="stageAmallar">
-        <button class="tasdiqB" onclick="statusQoy('${h.id}','${prefix}','TASDIQLANDI')">✓ Tasdiqlash</button>
-        <button class="radB" onclick="radEt('${h.id}','${prefix}')">✕ Rad etish</button>
-      </div>` : ''}
     </div>`;
   };
   const m = document.getElementById('modal');
@@ -500,7 +492,6 @@ function modalOch(id) {
       ${h.flagSabab ? '<br><span style="color:var(--qizil)">⚠ '+h.flagSabab+'</span>' : ''}
     </div>
     ${h.b_lat ? '<div id="mXarita" style="margin:0 22px 20px"></div>' : ''}
-    ${!boshqaraOladi ? '<div style="padding:0 22px 20px;color:var(--kul);font-size:12px;text-align:center">Nazoratchi rejimi — faqat kuzatish</div>' : ''}
   `;
   document.getElementById('modalFon').style.display='flex';
   if (h.b_lat) setTimeout(() => {
@@ -511,17 +502,6 @@ function modalOch(id) {
 }
 function modalYop(){ document.getElementById('modalFon').style.display='none'; if(mXarita){mXarita.remove();mXarita=null;} }
 function zoom(url){ document.getElementById('zoomImg').src=url; document.getElementById('zoomFon').style.display='flex'; }
-
-async function statusQoy(id, bosqich, status, sabab) {
-  const r = await apiPost('status', { hisobotId:id, bosqich, status, sabab });
-  if (r.ok) { await lentaYukla(); modalOch(id); dashboardYukla(); }
-  else alert('Xato: ' + r.xato);
-}
-function radEt(id, bosqich) {
-  const sabab = prompt("Rad etish sababi (xodimga push bilan boradi):");
-  if (sabab) statusQoy(id, bosqich, 'RAD ETILDI', sabab);
-  else if (sabab !== null) alert('Sabab majburiy');
-}
 
 function hisobotSatr(h) {
   return {
@@ -585,7 +565,7 @@ async function bYukla() {
     const r = await api('adminlar');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
     panel.innerHTML = `<h3>Adminlar (${r.adminlar.length})</h3>
-      <div class="izoh">Admin — dashboard + siz belgilagan ruxsatlar. Nazoratchi — faqat ko'radi, tasdiqlaydi/rad etadi, tahrirlay olmaydi.</div>
+      <div class="izoh">Admin — dashboard + siz belgilagan ruxsatlar. Nazoratchi — faqat ko'radi, tahrirlay olmaydi.</div>
       <button class="qoshBtn" onclick="adminForma()">＋ Yangi admin</button>
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>FIO</th><th>Rol</th><th>MFY</th><th>Ruxsatlar</th><th>Login</th><th>Holat</th><th>Amallar</th></tr>
@@ -747,7 +727,6 @@ function xodimForma(x) {
 
 const RUXSAT_NOMLARI = [
   {val:'xodim_qosh',nom:"Xodim qo'shish"},{val:'xodim_tahrir',nom:'Xodim tahrirlash'},{val:'xodim_blok',nom:'Xodim bloklash'},
-  {val:'hisobot_tasdiq',nom:'Hisobot tasdiqlash'},{val:'hisobot_rad',nom:'Hisobot rad etish'},
   {val:'eslatma_yuborish',nom:'Eslatma yuborish'},{val:'excel_export',nom:'Excel eksport'}
 ];
 function adminForma(a) {
@@ -802,13 +781,13 @@ function demoInit() {
       { id:'X002', fio:'Karimova Nilufar', pinfl:'22345678901234', mfyId:'M001', mfyNomi:'Oqsuv MFY', kategoriyaId:'K002', kategoriyaNomi:"Xotin-qizlar faoli", tel:'+998902223344', soni:0, oxirgi:'', bugunBor:false, flagBor:false, qizil:0, holat:'faol', deviceBor:false }
     ],
     adminlar: [
-      { id:'A001', fio:'Umarov Rustam', login:'admin1', rol:'admin', mfyId:'M001', ruxsatlar:['hisobot_tasdiq','hisobot_rad'], kalit:'DEMO-A', holat:'faol' },
+      { id:'A001', fio:'Umarov Rustam', login:'admin1', rol:'admin', mfyId:'M001', ruxsatlar:[], kalit:'DEMO-A', holat:'faol' },
       { id:'A002', fio:'Sobirova Dilnoza', login:'nazorat1', rol:'nazoratchi', mfyId:'', ruxsatlar:[], kalit:'DEMO-N', holat:'faol' }
     ],
     hisobotlar: [
       { id:'H1', xodimId:'X001', xodimFio:'Aliyev Alisher', mfyId:'M001', mfyNomi:'Oqsuv MFY', kategoriyaId:'K001', kategoriyaNomi:'Hokim yordamchisi',
         ishTuri:'Obodonlashtirish', ishNomi:"Markaziy ko'cha obodonlashtirish", sana:bugun, haftaKuni:'Chorshanba',
-        b_vaqt:bugun+' 09:15:00', b_tavsif:'Ish boshlandi, jihozlar tayyorlandi.', b_lat:40.5326, b_lng:71.2280, b_masofaM:45, b_mock:'', b_rasmlar:[DEMO_RASM], b_status:'KUTILMOQDA', b_sabab:'',
+        b_vaqt:bugun+' 09:15:00', b_tavsif:'Ish boshlandi, jihozlar tayyorlandi.', b_lat:40.5326, b_lng:71.2280, b_masofaM:45, b_mock:'', b_rasmlar:[DEMO_RASM], b_status:'TASDIQLANDI', b_sabab:'',
         d_vaqt:bugun+' 11:20:00', d_tavsif:'Daraxtlar oqlanmoqda, yarmi bajarildi.', d_lat:40.5326, d_lng:71.2280, d_rasmlar:[DEMO_RASM], d_status:'TASDIQLANDI', d_sabab:'',
         y_vaqt:'', y_tavsif:'', y_lat:'', y_lng:'', y_rasmlar:[], y_status:'', y_sabab:'',
         reyting:'YASHIL', flagSabab:'', kechikkan:'' }
@@ -836,7 +815,6 @@ function demoAPI(action, p) {
 function demoPost(action, d) {
   demoInit();
   demoDb.audit.push({ vaqt:new Date().toISOString().slice(0,19).replace('T',' '), kim:'Demo Superadmin', amal:action.toUpperCase(), tafsilot:JSON.stringify(d).slice(0,80) });
-  if (action==='status') { const h=demoDb.hisobotlar.find(h=>h.id===d.hisobotId); if(h) h[d.bosqich+'_status']=d.status; return {ok:true}; }
   if (action==='eslatmaYuborGuruh') return {ok:true, yuborildi:(d.xodimIdlar||[]).length};
   if (action==='xodimQosh') { const id='X'+Date.now().toString().slice(-4); demoDb.xodimlar.push({id,fio:d.fio,pinfl:d.pinfl,mfyId:d.mfyId,mfyNomi:demoDb.mfy.find(m=>m.id===d.mfyId)?.nomi||'',kategoriyaId:d.kategoriyaId,kategoriyaNomi:demoDb.kategoriyalar.find(k=>k.id===d.kategoriyaId)?.nomi||'',tel:d.tel,soni:0,oxirgi:'',bugunBor:false,flagBor:false,qizil:0,holat:'faol',deviceBor:false}); return {ok:true,id}; }
   if (action==='xodimTahrir') { const x=demoDb.xodimlar.find(x=>x.id===d.xodimId); if(x) Object.assign(x,{fio:d.fio??x.fio,tel:d.tel??x.tel,holat:d.holat??x.holat}); return {ok:true}; }
