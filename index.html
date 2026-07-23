@@ -242,6 +242,7 @@ main{flex:1;display:flex;overflow:hidden}
         <button onclick="bTab('mfy',this)">🏘 MFY</button>
         <button onclick="bTab('kategoriyalar',this)">🏷 Kategoriyalar</button>
         <button onclick="bTab('bildirishnoma',this)">🔔 Bildirishnoma</button>
+        <button onclick="bTab('sozlamalar',this)">⚙️ Sozlamalar</button>
         <button onclick="bTab('tahrir',this)">✏️ Tahrir so'rovlari</button>
         <button onclick="bTab('audit',this)">📜 Audit log</button>
       </div>
@@ -355,11 +356,11 @@ async function dashboardYukla() {
   const d = await api('dashboard');
   if (!d.ok) return;
   document.getElementById('statlar').innerHTML = `
-    <div class="stat y"><b>${d.yuklaganlar}</b><span>yuklagan</span></div>
-    <div class="stat q"><b>${d.jamiXodim - d.yuklaganlar}</b><span>yubormagan</span></div>
-    <div class="stat s"><b>${d.kechikkan}</b><span>kechikkan</span></div>
-    <div class="stat q"><b>${d.qizil + d.sariq}</b><span>flag</span></div>
-    <div class="stat"><b>${d.bugunSoni}</b><span>bugun</span></div>`;
+    <div class="stat y"><b>${d.yuklaganlar||0}</b><span>yuklagan</span></div>
+    <div class="stat q"><b>${(d.jamiXodim||0) - (d.yuklaganlar||0)}</b><span>yubormagan</span></div>
+    <div class="stat s"><b>${d.kechikkan||0}</b><span>kechikkan</span></div>
+    <div class="stat q"><b>${(d.qizil||0) + (d.sariq||0)}</b><span>flag</span></div>
+    <div class="stat"><b>${d.bugunSoni||0}</b><span>bugun</span></div>`;
 }
 
 async function xodimlarYukla() {
@@ -383,7 +384,7 @@ function xodimlarChiz() {
           <div class="fio">${x.fio}</div>
           <div class="meta">${x.mfyNomi||''} · ${x.kategoriyaNomi||''}</div>
         </div>
-        <div class="son">${x.soni}</div>
+        <div class="son">${x.soni||0}</div>
       </div>
     </div>`).join('') || '<div class="yuklanmoqda">Topilmadi</div>';
 }
@@ -636,6 +637,36 @@ async function bYukla() {
       <br><button class="qoshBtn" onclick="bildirishnomaSaqla()">Saqlash</button>`;
   }
 
+  if (bJoriy === 'sozlamalar') {
+    const r = await api('sozlamaOl');
+    let daqiqa = r.ok ? (r.interval || 1) : 1;
+    let vaqtVal = daqiqa;
+    let vaqtBirlik = 'daqiqa';
+
+    if (daqiqa < 1) {
+      vaqtVal = Math.round(daqiqa * 60);
+      vaqtBirlik = 'soniya';
+    } else if (daqiqa >= 60 && daqiqa % 60 === 0) {
+      vaqtVal = daqiqa / 60;
+      vaqtBirlik = 'soat';
+    }
+
+    panel.innerHTML = `<h3>⚙️ Tizim Sozlamalari</h3>
+      <div class="izoh">Xodim bitta ishning 1-bosqichini topshirgach, keyingi (2 va 3) bosqichlarni yuklash uchun o'tishi kerak bo'lgan kutiladigan minimal vaqt oralig'i.</div>
+      <div style="max-width:420px;background:#FBFCFE;padding:16px;border:1px solid var(--chiziq);border-radius:12px">
+        <label style="font-weight:600;font-size:12.5px;display:block;margin-bottom:6px">Bosqichlar orasidagi kutish vaqti</label>
+        <div style="display:flex;gap:10px;margin-bottom:16px">
+          <input id="szVaqt" type="number" min="1" value="${vaqtVal}" style="flex:1;padding:10px;border:1px solid var(--chiziq);border-radius:9px;font-size:14px">
+          <select id="szBirlik" style="width:130px;padding:10px;border:1px solid var(--chiziq);border-radius:9px;font-size:13px;background:#fff">
+            <option value="soniya" ${vaqtBirlik==='soniya'?'selected':''}>Soniya</option>
+            <option value="daqiqa" ${vaqtBirlik==='daqiqa'?'selected':''}>Daqiqa</option>
+            <option value="soat" ${vaqtBirlik==='soat'?'selected':''}>Soat</option>
+          </select>
+        </div>
+        <button class="qoshBtn" style="margin:0" onclick="tizimSozlamaSaqla()">Saqlash</button>
+      </div>`;
+  }
+
   if (bJoriy === 'tahrir') {
     const r = await api('tahrirSorovlari');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
@@ -668,6 +699,21 @@ async function bYukla() {
         </tr>`).join('')}
       </table></div>`;
   }
+}
+
+async function tizimSozlamaSaqla() {
+  const vaqt = +document.getElementById('szVaqt').value;
+  const birlik = document.getElementById('szBirlik').value;
+
+  if (!vaqt || vaqt < 1) return alert("Vaqtni to'g'ri kiriting");
+
+  let daqiqa = vaqt;
+  if (birlik === 'soniya') daqiqa = vaqt / 60;
+  if (birlik === 'soat') daqiqa = vaqt * 60;
+
+  const r = await apiPost('sozlamaSaqla', { interval: daqiqa });
+  if (r.ok) alert('Sozlama muvaffaqiyatli saqlandi!');
+  else alert('Xato: ' + (r.xato||''));
 }
 
 async function deviceReset(id) { if(!confirm("Qurilma bog'lanishi o'chirilsinmi?")) return; const r=await apiPost('deviceReset',{xodimId:id}); r.ok?bYukla():alert('Xato: '+r.xato); }
@@ -727,7 +773,7 @@ function xodimForma(x) {
 
 const RUXSAT_NOMLARI = [
   {val:'xodim_qosh',nom:"Xodim qo'shish"},{val:'xodim_tahrir',nom:'Xodim tahrirlash'},{val:'xodim_blok',nom:'Xodim bloklash'},
-  {val:'eslatma_yuborish',nom:'Eslatma yuborish'},{val:'excel_export',nom:'Excel eksport'}
+  {val:'eslatma_yuborish',nom:'Eslatma yuborish'},{val:'excel_export',nom:'Excel eksport'},{val:'sozlamalar',nom:'Sozlamalar'}
 ];
 function adminForma(a) {
   formaChiz(a ? 'Adminni tahrirlash' : 'Yangi admin', [
@@ -794,7 +840,8 @@ function demoInit() {
     ],
     audit: [{ vaqt:bugun+' 09:00:00', kim:'Superadmin', amal:'DEMO_BOSHLANDI', tafsilot:'' }],
     tahrirSorovlari: [],
-    bildirishnoma: { matn:'Hisobotni yuklang', interval:60 }
+    bildirishnoma: { matn:'Hisobotni yuklang', interval:60 },
+    interval: 1
   };
 }
 function demoAPI(action, p) {
@@ -808,6 +855,7 @@ function demoAPI(action, p) {
   if (action==='auditlar') return {ok:true, audit:demoDb.audit.slice().reverse()};
   if (action==='tahrirSorovlari') return {ok:true, sorovlar:demoDb.tahrirSorovlari};
   if (action==='bildirishnomaSozlama') return {ok:true, sozlama:demoDb.bildirishnoma};
+  if (action==='sozlamaOl') return {ok:true, interval:demoDb.interval};
   if (action==='dashboard') return {ok:true, bugun, jamiXodim:2, bugunSoni:1, yuklaganlar:1, kechikkan:0, qizil:0, sariq:0, yubormaganlar:[{id:'X002',fio:'Karimova Nilufar',tel:'+998902223344'}]};
   if (action==='hisobotlar') { let l=demoDb.hisobotlar; if(p.xodim) l=l.filter(h=>h.xodimId===p.xodim); return {ok:true, hisobotlar:l}; }
   return {ok:false, xato:'Demo: mavjud emas'};
@@ -816,6 +864,7 @@ function demoPost(action, d) {
   demoInit();
   demoDb.audit.push({ vaqt:new Date().toISOString().slice(0,19).replace('T',' '), kim:'Demo Superadmin', amal:action.toUpperCase(), tafsilot:JSON.stringify(d).slice(0,80) });
   if (action==='eslatmaYuborGuruh') return {ok:true, yuborildi:(d.xodimIdlar||[]).length};
+  if (action==='sozlamaSaqla') { demoDb.interval = d.interval; return {ok:true}; }
   if (action==='xodimQosh') { const id='X'+Date.now().toString().slice(-4); demoDb.xodimlar.push({id,fio:d.fio,pinfl:d.pinfl,mfyId:d.mfyId,mfyNomi:demoDb.mfy.find(m=>m.id===d.mfyId)?.nomi||'',kategoriyaId:d.kategoriyaId,kategoriyaNomi:demoDb.kategoriyalar.find(k=>k.id===d.kategoriyaId)?.nomi||'',tel:d.tel,soni:0,oxirgi:'',bugunBor:false,flagBor:false,qizil:0,holat:'faol',deviceBor:false}); return {ok:true,id}; }
   if (action==='xodimTahrir') { const x=demoDb.xodimlar.find(x=>x.id===d.xodimId); if(x) Object.assign(x,{fio:d.fio??x.fio,tel:d.tel??x.tel,holat:d.holat??x.holat}); return {ok:true}; }
   if (action==='deviceReset') { const x=demoDb.xodimlar.find(x=>x.id===d.xodimId); if(x) x.deviceBor=false; return {ok:true}; }
