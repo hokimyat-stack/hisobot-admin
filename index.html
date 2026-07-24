@@ -255,7 +255,6 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
 @media(max-width:900px){#mobilMenyu{display:block}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* Dashboard Grid Stillari */
 .dashGrid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:14px;margin-bottom:24px}
 .dashCard{background:rgba(255,255,255,0.75);border:1px solid var(--chiziq);border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,0.03)}
 .dashCard span{font-size:11px;font-weight:800;color:var(--kul);text-transform:uppercase;letter-spacing:0.06em}
@@ -328,7 +327,6 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
       </div>
     </section>
 
-    <!-- DASHBOARD BO'LIMI (Rolga qarab filtrlanadi: Superadmin/Admin hamma, Nazoratchi faqat o'z MFYsi) -->
     <section id="dashboardPanel" style="display:block">
       <div class="bPanel">
         <h3 id="dashSarlavha">Umumiy Ko'rsatkichlar va Faollik</h3>
@@ -338,14 +336,14 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
           <div class="dashCard blue"><span>Jami Xodimlar</span><b id="dJamiXodim">0</b></div>
           <div class="dashCard green"><span>Bugun Yuklaganlar</span><b id="dBugunYuklagan">0</b></div>
           <div class="dashCard red"><span>Yuklamaganlar</span><b id="dBugunYuklamagan">0</b></div>
-          <div class="dashCard red"><span>Flag / Qizil Hisobotlar</span><b id="dFlagSoni">0</b></div>
+          <div class="dashCard red"><span>Flag / Muammoli</span><b id="dFlagSoni">0</b></div>
         </div>
 
         <h3 style="margin-top:24px">Tashkilotlar kesimida bugungi holat</h3>
         <div class="izoh">Qaysi tashkilot xodimlari faol ekanligi</div>
         <div style="overflow-x:auto">
           <table class="jadval" id="dashJadval">
-            <tr><th>Tashkilot (MFY)</th><th>Jami Xodim</th><th>Bugun Yuklagan</th><th>Foiz</th></tr>
+            <tr><th>Tashkilot</th><th>Jami Xodim</th><th>Bugun Yuklagan</th><th>Foiz</th></tr>
             <tr><td colspan="4" class="yuklanmoqda"><div class="spinner"></div>Yuklanmoqda...</td></tr>
           </table>
         </div>
@@ -384,7 +382,6 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
 </div>
 
 <script>
-// YANGI APPS SCRIPT URL
 let API = 'https://script.google.com/macros/s/AKfycbx-Xasac-UeyYFB9ihgR03IMiw6yHRFPohBAuwk7IeLaiogATxR1Qk7tKo9hhbORASt/exec';
 let SESSIYA = null;
 let xodimlar = [], mfylar = [], kategoriyalar = [], tanlangan = null, joriyHisobotlar = [], bJoriy = 'xodimlar';
@@ -473,7 +470,6 @@ async function boshla() {
   badge.className = 'rolBadge ' + SESSIYA.rol;
   document.getElementById('brandSub').textContent = SESSIYA.fio;
   
-  // Barcha rollar uchun Navigatsiyada Dashboard ko'rinadi
   document.getElementById('navTabs').style.display = 'flex';
   if (SESSIYA.rol !== 'nazoratchi') document.getElementById('eslatmaPanel').style.display = 'block';
 
@@ -505,7 +501,6 @@ function bolimKorsat(nom) {
   if (nom==='boshqaruv') bYukla();
 }
 
-// ROLGA QARAB DASHBOARDNI SHAKLLANTIRISH (Superadmin/Admin = Hamma, Nazoratchi = Faqat o'z MFYsi)
 async function dashboardYukla() {
   document.getElementById('dashSarlavha').textContent = SESSIYA.rol === 'nazoratchi' ? 'Sizning tashkilotingiz statistikasi' : 'Umumiy Ko\'rsatkichlar va Faollik';
   
@@ -516,7 +511,6 @@ async function dashboardYukla() {
   let xodims = rx.xodimlar;
   let hisobots = rh.hisobotlar;
 
-  // Nazoratchi uchun faqat o'ziga biriktirilgan MFY filtrlash
   if (SESSIYA.rol === 'nazoratchi' && SESSIYA.mfyId) {
     xodims = xodims.filter(x => String(x.mfyId) === String(SESSIYA.mfyId));
     hisobots = hisobots.filter(h => String(h.mfyId) === String(SESSIYA.mfyId));
@@ -698,7 +692,7 @@ function modalOch(id) {
     ${stage('2. Davom etmoqda', h.d_vaqt, h.d_tavsif, h.d_lat, h.d_lng, h.d_rasmlar)}
     ${stage('3. Tugatildi', h.y_vaqt, h.y_tavsif, h.y_lat, h.y_lng, h.y_rasmlar)}
     <div style="margin:16px 30px 24px;background:rgba(255,255,255,0.7);border:1px solid var(--chiziq);border-radius:16px;padding:14px 18px">
-      <b>Texnik ma'lumot:</b> Masofa: ${h.b_masofaM!==''&&h.b_masofaM!==undefined?h.b_masofaM+' m':'—'} &nbsp;·&nbsp; Reyting: <b>${h.reyting}</b>
+      <b>Texnik ma'lumot:</b> GPS Lokatsiya: ${h.b_lat ? (+h.b_lat).toFixed(5)+', '+(+h.b_lng).toFixed(5) : '—'} &nbsp;·&nbsp; Reyting: <b>${h.reyting}</b>
       ${h.flagSabab ? '<br><span style="color:var(--qizil)">⚠ '+h.flagSabab+'</span>' : ''}
     </div>
     ${h.b_lat ? '<div id="mXarita"></div>' : ''}
@@ -718,10 +712,10 @@ function hisobotSatr(h) {
   return {
     'Sana':h.sana,'Hafta kuni':h.haftaKuni,'Xodim':h.xodimFio,'Tashkilot':h.mfyNomi,'Kategoriya':h.kategoriyaNomi,
     'Ish nomi':h.ishNomi||h.ishTuri,
-    'Boshlandi vaqti':h.b_vaqt,'Boshlandi tavsif':h.b_tavsif,
+    'Boshlandi vaqti':h.b_vaqt,'Boshlandi tavsif':h.b_tavsif,'Boshlandi GPS':(h.b_lat?h.b_lat+','+h.b_lng:''),
     'Davom vaqti':h.d_vaqt,'Davom tavsif':h.d_tavsif,
     'Yakun vaqti':h.y_vaqt,'Yakun tavsif':h.y_tavsif,
-    'Reyting':h.reyting,'Flag sabab':h.flagSabab,'Kechikkan':h.kechikkan
+    'Reyting':h.reyting,'Kechikkan':h.kechikkan
   };
 }
 function excelSaqla(rows, nom) {
@@ -758,7 +752,7 @@ async function bYukla() {
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>FIO</th><th>PINFL</th><th>Tashkilot</th><th>Kategoriya</th><th>Qurilma</th><th>Holat</th><th>Amallar</th></tr>
         ${r.xodimlar.map(x => `<tr>
-          <td><b>${x.fio}</b>${x.qizil>0?' <span class="mini qizil">🔴'+x.qizil+'</span>':''}</td>
+          <td><b>${x.fio}</b></td>
           <td style="font-family:monospace;font-size:11px">${x.pinfl||''}</td>
           <td>${x.mfyNomi||'—'}</td><td>${x.kategoriyaNomi||'—'}</td>
           <td>${x.deviceBor?"📱":'—'}</td>
@@ -801,11 +795,9 @@ async function bYukla() {
     panel.innerHTML = `<h3>Tashkilotlar (${r.mfylar.length})</h3>
       <button class="qoshBtn" onclick="mfyForma()">＋ Yangi tashkilot</button>
       <div style="overflow-x:auto"><table class="jadval">
-        <tr><th>Nomi</th><th>Rahbar</th><th>Telefon</th><th>Koordinata</th><th>Radius</th><th>Amallar</th></tr>
+        <tr><th>Nomi</th><th>Rahbar</th><th>Telefon</th><th>Amallar</th></tr>
         ${r.mfylar.map(t => `<tr>
           <td><b>${t.nomi}</b></td><td>${t.rahbar||'—'}</td><td>${t.tel||'—'}</td>
-          <td style="font-family:monospace;font-size:11px">${t.lat?(+t.lat).toFixed(4)+', '+(+t.lng).toFixed(4):'—'}</td>
-          <td>${t.radius||500} m</td>
           <td style="white-space:nowrap">
             <button class="mini kok" onclick='mfyForma(${JSON.stringify(t)})'>Tahrirlash</button>
             <button class="mini qizil" onclick="mfyOchir('${t.id}','${t.nomi}')">O'chirish</button>
@@ -987,14 +979,12 @@ function adminForma(a) {
   });
 }
 
+// Tashkilot qo'shish formalaridan koordinata maydonlari olib tashlandi
 function mfyForma(t) {
   formaChiz(t ? 'Tashkilotni tahrirlash' : 'Yangi tashkilot', [
     { id:'nomi', label:'Nomi', qiymat:t?.nomi, majburiy:true },
     { id:'rahbar', label:'Rahbar F.I.Sh.', qiymat:t?.rahbar },
-    { id:'tel', label:'Telefon', qiymat:t?.tel },
-    { id:'lat', label:'Latitude', qiymat:t?.lat },
-    { id:'lng', label:'Longitude', qiymat:t?.lng },
-    { id:'radius', label:'Radius (metr)', qiymat:t?.radius||500 }
+    { id:'tel', label:'Telefon', qiymat:t?.tel }
   ], async (q) => {
     const r = t ? await apiPost('mfyTahrir', { mfyId:t.id, ...q }) : await apiPost('mfyQosh', q);
     if (r.ok) { 
