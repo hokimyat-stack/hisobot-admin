@@ -290,7 +290,6 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
     <nav class="navTabs" id="navTabs" style="display:none">
       <button id="navDashboard" class="aktiv" onclick="bolimKorsat('dashboard')">Dashboard</button>
       <button id="navNazorat" onclick="bolimKorsat('nazorat')">Nazorat</button>
-      <!-- Boshqaruv tugmasi faqat Superadmin va Adminlar uchun chiqadi -->
       <button id="navBoshqaruv" onclick="bolimKorsat('boshqaruv')" style="display:none">Boshqaruv</button>
     </nav>
     <button class="cta" onclick="hammasiExcel()">⬇ Excel</button>
@@ -351,7 +350,6 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
       </div>
     </section>
 
-    <!-- BOSHQARUV BO'LIMI (Faqat ruxsat etilgan tablar chiqadi) -->
     <section id="boshqaruv">
       <div class="bTabs" id="bTabsContainer">
         <!-- Dinamik ravishda adminning ruxsatiga qarab to'ldiriladi -->
@@ -377,7 +375,8 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
 </div>
 
 <script>
-let API = 'https://script.google.com/macros/s/AKfycbz_hbG6s19GDAHZh3gfdkDjTrZiCMn8IGm2obp18IeIZBdo6zHYgCaOp9fNlbJ0BPGf/exec';
+// ENG YANGI DOIMIY API MANZILI SHU YERGA YOZILDI
+let API = 'https://script.google.com/macros/s/AKfycbwk2ZzBNoLiHBRpx4FQyMoBqcfDxId3hBBVnukYdTSFkuOLEYtnY6CPe200NSatWvc/exec';
 let SESSIYA = null;
 let xodimlar = [], mfylar = [], kategoriyalar = [], tanlangan = null, joriyHisobotlar = [], bJoriy = '';
 
@@ -467,12 +466,9 @@ async function boshla() {
   
   document.getElementById('navTabs').style.display = 'flex';
   
-  // ROL BO'YICHA MENUNI BOSHQARISH
   if (SESSIYA.rol === 'nazoratchi') {
-    // Nazoratchida faqat Dashboard va Nazorat bo'limi bo'ladi, Boshqaruv umuman yashirinadi
     document.getElementById('navBoshqaruv').style.display = 'none';
   } else {
-    // Superadmin va Adminlar uchun Boshqaruv tugmasi chiqadi
     document.getElementById('navBoshqaruv').style.display = 'inline-block';
   }
 
@@ -507,18 +503,15 @@ function bolimKorsat(nom) {
   if (nom==='boshqaruv') boshqaruvTablariniChiz();
 }
 
-// ADMIN UCHUN FAQAT RUXSAT ETILGAN TABLARNI CHIZISH
 function boshqaruvTablariniChiz() {
   const tabContainer = document.getElementById('bTabsContainer');
   let tabsHTML = '';
   
   const ruxsatlar = SESSIYA.rol === 'superadmin' ? ['xodimlar','adminlar','mfy','kategoriyalar','bildirishnoma','sozlamalar','tahrir','audit'] : SESSIYA.ruxsatlar;
 
-  // Agar admin xodim qo'shish/tahrirlash huquqiga ega bo'lsa
   if (ruxsatlar.includes('xodim_qosh') || ruxsatlar.includes('xodim_tahrir') || SESSIYA.rol === 'superadmin') {
     tabsHTML += `<button onclick="bTab('xodimlar',this)">👤 Xodimlar</button>`;
   }
-  // Adminlar uchun
   if (SESSIYA.rol === 'superadmin') {
     tabsHTML += `<button onclick="bTab('adminlar',this)">🔑 Adminlar</button>`;
   }
@@ -535,7 +528,6 @@ function boshqaruvTablariniChiz() {
     tabsHTML += `<button onclick="bTab('sozlamalar',this)">⚙️ Sozlamalar</button>`;
   }
   
-  // Umumiy ko'rinadigan tablar
   tabsHTML += `<button onclick="bTab('tahrir',this)">✏️ Tahrir so'rovlari</button>`;
   if (SESSIYA.rol === 'superadmin') {
     tabsHTML += `<button onclick="bTab('audit',this)">📜 Audit log</button>`;
