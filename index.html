@@ -82,7 +82,7 @@ main{flex:1;display:flex;overflow:hidden;padding:16px;gap:16px}
 .tSpine::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:var(--chiziq)}
 .tNode{position:absolute;left:9px;top:22px;width:14px;height:14px;border-radius:50%;border:3px solid var(--oq)}
 .tNode.YASHIL{background:var(--yashil)} .tNode.SARIQ{background:var(--sariq)} .tNode.QIZIL{background:var(--qizil)}
-.tCard{flex:1;background:var(--oq);border:1px solid var(--chiziq);border-radius:18px;padding:18px;margin:8px 0;cursor:pointer;transition:all .25s ease;box-shadow:0 4px 16px rgba(0,0,0,0.03)}
+.tCard{flex:1;background:var(--oq);border:1px solid var(--chiziq);border-radius:18px;padding:18px;margin:8px 0;cursor:pointer;transition:all .2s ease;box-shadow:0 4px 16px rgba(0,0,0,0.03)}
 .tCard:hover{transform:translateY(-2px);box-shadow:0 12px 30px -8px rgba(37,99,235,0.12)}
 .tTop{display:flex;gap:16px;align-items:center}
 .tTop img{width:64px;height:64px;border-radius:14px;object-fit:cover;background:var(--fon);flex-shrink:0;border:1px solid var(--chiziq)}
@@ -173,12 +173,11 @@ main{flex:1;display:flex;overflow:hidden;padding:16px;gap:16px}
 
 <div id="toastContainer"></div>
 
+<!-- ODDIY ADMIN VA NAZORATCHILAR UCHUN FAQAT LOGIN-PAROL EKRANI -->
 <div id="loginEkran">
   <div class="loginCard">
     <div class="brand">KUNLIK HISOBOT</div>
     <div class="sub">Nazorat Platformasi</div>
-    <label>Apps Script URL</label>
-    <input id="inUrl" placeholder="https://script.google.com/macros/s/.../exec">
     <label>Login</label>
     <input id="inLogin" placeholder="Login">
     <label>Parol</label>
@@ -272,7 +271,8 @@ main{flex:1;display:flex;overflow:hidden;padding:16px;gap:16px}
 </div>
 
 <script>
-let API = localStorage.getItem('API_URL') || 'https://script.google.com/macros/s/AKfycbyIRVGLf-9nnOiBLPFqbXDeqL3XuI7pejWW5NBD413gsAnoUOVhrGcz2CvU0yO7liQ4/exec';
+// DOIMIY APPS SCRIPT URL (Endi foydalanuvchi kiritishi shart emas)
+let API = 'https://script.google.com/macros/s/AKfycbxy1swGkETTMViD3adluZFI_HXhZXdMoHLt2PHamosii4GkvnT_IsIqDENyn9xrdv2r/exec';
 let SESSIYA = null;
 let xodimlar = [], mfylar = [], kategoriyalar = [], tanlangan = null, joriyHisobotlar = [], bJoriy = 'xodimlar';
 
@@ -314,22 +314,15 @@ async function apiPost(action, data) {
   return r.json();
 }
 
-document.getElementById('inUrl').value = API;
-
+// SUPERADMIN LINK ORQALI KIRISHI
 async function superadminUrlTekshir() {
-  const urlParam = new URLSearchParams(location.search).get('url');
-  if (urlParam) { API = urlParam.trim(); localStorage.setItem('API_URL', API); }
   const params = new URLSearchParams(location.search);
   const kalit = params.get('kalit');
   if (!kalit) return false;
-  API = localStorage.getItem('API_URL') || document.getElementById('inUrl').value.trim();
-  if (!API) return false;
   try {
     const r = await fetch(API + '?' + new URLSearchParams({ kalit, action:'ping' }));
     const res = await r.json();
-    // 2-xato to'g'irlandi: Faqat superadmin link orqali kira oladi!
     if (res.ok && res.rol === 'superadmin') {
-      localStorage.setItem('API_URL', API);
       SESSIYA = { kalit, rol:'superadmin', fio:'Superadmin', mfyId:'', ruxsatlar:[] };
       sessionStorage.setItem('SESSIYA', JSON.stringify(SESSIYA));
       history.replaceState(null, '', location.pathname);
@@ -340,19 +333,18 @@ async function superadminUrlTekshir() {
   return false;
 }
 
+// ODDIY ADMIN VA NAZORATCHILAR UCHUN LOGIN-PAROL ORQALI KIRISH
 async function loginParol() {
-  API = document.getElementById('inUrl').value.trim();
   const login = document.getElementById('inLogin').value.trim();
   const parol = document.getElementById('inParol').value;
   const xato = document.getElementById('loginXato');
-  if (!API || !login || !parol) { xato.textContent = "Barcha maydonlarni to'ldiring"; xato.style.display='block'; return; }
+  if (!login || !parol) { xato.textContent = "Barcha maydonlarni to'ldiring"; xato.style.display='block'; return; }
   xato.style.display = 'none';
   try {
     const r = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
       body: JSON.stringify({ action:'adminLogin', login, parol }) });
     const res = await r.json();
     if (!res.ok) throw new Error(res.xato);
-    localStorage.setItem('API_URL', API);
     SESSIYA = { kalit: res.admin.kalit, rol: res.admin.rol, fio: res.admin.fio, mfyId: res.admin.mfyId, ruxsatlar: res.admin.ruxsatlar||[] };
     sessionStorage.setItem('SESSIYA', JSON.stringify(SESSIYA));
     boshla();
@@ -828,7 +820,6 @@ function mfyForma(t) {
     const r = t ? await apiPost('mfyTahrir', { mfyId:t.id, ...q }) : await apiPost('mfyQosh', q);
     if (r.ok) { 
       formaYop(); 
-      // 4-xato to'g'irlandi: Global mfylar massivini yangilash
       const ym = await api('mfylar'); if(ym.ok) { mfylar = ym.mfylar; fillSelect('fMfy', mfylar, true); }
       bYukla(); toast("Saqlandi!"); 
     } else toast('Xato', 'xato');
@@ -843,7 +834,6 @@ function kategoriyaForma(k) {
     const r = k ? await apiPost('kategoriyaTahrir', { kategoriyaId:k.id, ...q }) : await apiPost('kategoriyaQosh', q);
     if (r.ok) { 
       formaYop(); 
-      // 4-xato to'g'irlandi: Global kategoriyalar massivini yangilash
       const yk = await api('kategoriyalar'); if(yk.ok) { kategoriyalar = yk.kategoriyalar; fillSelect('fKategoriya', kategoriyalar, true); }
       bYukla(); toast("Saqlandi!"); 
     } else toast('Xato', 'xato');
@@ -853,7 +843,7 @@ function kategoriyaForma(k) {
 (async () => {
   if (await superadminUrlTekshir()) return boshla();
   const s = sessionStorage.getItem('SESSIYA');
-  if (s) { SESSIYA = JSON.parse(s); API = localStorage.getItem('API_URL') || API; return boshla(); }
+  if (s) { SESSIYA = JSON.parse(s); return boshla(); }
 })();
 </script>
 </body>
