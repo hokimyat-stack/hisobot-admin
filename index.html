@@ -424,6 +424,7 @@ async function apiPost(action, data) {
   return r.json();
 }
 
+// SUPERADMIN LINK ORQALI KIRISHI (Faqat kalit yetarli, chunki API doimiy yozilgan)
 async function superadminUrlTekshir() {
   const params = new URLSearchParams(location.search);
   const kalit = params.get('kalit');
