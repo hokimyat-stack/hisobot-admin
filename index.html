@@ -290,7 +290,8 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
     <nav class="navTabs" id="navTabs" style="display:none">
       <button id="navDashboard" class="aktiv" onclick="bolimKorsat('dashboard')">Dashboard</button>
       <button id="navNazorat" onclick="bolimKorsat('nazorat')">Nazorat</button>
-      <button id="navBoshqaruv" onclick="bolimKorsat('boshqaruv')">Boshqaruv</button>
+      <!-- Boshqaruv tugmasi faqat Superadmin va Adminlar uchun chiqadi -->
+      <button id="navBoshqaruv" onclick="bolimKorsat('boshqaruv')" style="display:none">Boshqaruv</button>
     </nav>
     <button class="cta" onclick="hammasiExcel()">⬇ Excel</button>
     <button class="chiqishBtn" onclick="chiqish()">Chiqish</button>
@@ -350,16 +351,10 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
       </div>
     </section>
 
+    <!-- BOSHQARUV BO'LIMI (Faqat ruxsat etilgan tablar chiqadi) -->
     <section id="boshqaruv">
-      <div class="bTabs">
-        <button class="aktiv" onclick="bTab('xodimlar',this)">👤 Xodimlar</button>
-        <button onclick="bTab('adminlar',this)">🔑 Adminlar</button>
-        <button onclick="bTab('mfy',this)">🏢 Tashkilotlar</button>
-        <button onclick="bTab('kategoriyalar',this)">🏷 Kategoriyalar</button>
-        <button onclick="bTab('bildirishnoma',this)">🔔 Bildirishnoma</button>
-        <button onclick="bTab('sozlamalar',this)">⚙️ Sozlamalar</button>
-        <button onclick="bTab('tahrir',this)">✏️ Tahrir so'rovlari</button>
-        <button onclick="bTab('audit',this)">📜 Audit log</button>
+      <div class="bTabs" id="bTabsContainer">
+        <!-- Dinamik ravishda adminning ruxsatiga qarab to'ldiriladi -->
       </div>
       <div class="bPanel" id="bPanel"><div class="yuklanmoqda"><div class="spinner"></div></div></div>
     </section>
@@ -382,10 +377,9 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
 </div>
 
 <script>
-// ENG OXIRGI DOIMIY API MANZILI
 let API = 'https://script.google.com/macros/s/AKfycbz2orAMZv11nh54RFTBPVgBZTCbwkwq0rd90YMaFXZnbTBkZpYarbDyG4ZyJxtPhC5S/exec';
 let SESSIYA = null;
-let xodimlar = [], mfylar = [], kategoriyalar = [], tanlangan = null, joriyHisobotlar = [], bJoriy = 'xodimlar';
+let xodimlar = [], mfylar = [], kategoriyalar = [], tanlangan = null, joriyHisobotlar = [], bJoriy = '';
 
 function toast(matn, turi='muvaffaqiyat') {
   const c = document.getElementById('toastContainer');
@@ -425,7 +419,6 @@ async function apiPost(action, data) {
   return r.json();
 }
 
-// TUZATILDI: SUPERADMIN UCHUN URL PARAMETRIDAN EMAS, FAQAT KALIT ORQALI TEKSHIRISH (CORS xatosi bartaraf etildi)
 async function superadminUrlTekshir() {
   const params = new URLSearchParams(location.search);
   const kalit = params.get('kalit');
@@ -434,7 +427,7 @@ async function superadminUrlTekshir() {
     const r = await fetch(API + '?' + new URLSearchParams({ kalit, action:'ping' }));
     const res = await r.json();
     if (res.ok && res.rol === 'superadmin') {
-      SESSIYA = { kalit, rol:'superadmin', fio:'Superadmin', mfyId:'', ruxsatlar:[] };
+      SESSIYA = { kalit, rol:'superadmin', fio:'Superadmin', mfyId:'', ruxsatlar:['xodim_qosh','xodim_tahrir','xodim_blok','eslatma_yuborish','mfy_boshqar','kategoriya_boshqar','excel_export','sozlamalar'] };
       sessionStorage.setItem('SESSIYA', JSON.stringify(SESSIYA));
       history.replaceState(null, '', location.pathname);
       return true;
@@ -473,6 +466,16 @@ async function boshla() {
   document.getElementById('brandSub').textContent = SESSIYA.fio;
   
   document.getElementById('navTabs').style.display = 'flex';
+  
+  // ROL BO'YICHA MENUNI BOSHQARISH
+  if (SESSIYA.rol === 'nazoratchi') {
+    // Nazoratchida faqat Dashboard va Nazorat bo'limi bo'ladi, Boshqaruv umuman yashirinadi
+    document.getElementById('navBoshqaruv').style.display = 'none';
+  } else {
+    // Superadmin va Adminlar uchun Boshqaruv tugmasi chiqadi
+    document.getElementById('navBoshqaruv').style.display = 'inline-block';
+  }
+
   if (SESSIYA.rol !== 'nazoratchi') document.getElementById('eslatmaPanel').style.display = 'block';
 
   const [m, k] = await Promise.all([api('mfylar'), api('kategoriyalar')]);
@@ -492,7 +495,8 @@ function fillSelect(id, list, keepFirst) {
 function bolimKorsat(nom) {
   document.getElementById('navDashboard').classList.toggle('aktiv', nom==='dashboard');
   document.getElementById('navNazorat').classList.toggle('aktiv', nom==='nazorat');
-  document.getElementById('navBoshqaruv').classList.toggle('aktiv', nom==='boshqaruv');
+  const navBosh = document.getElementById('navBoshqaruv');
+  if(navBosh) navBosh.classList.toggle('aktiv', nom==='boshqaruv');
   
   document.getElementById('chap').style.display = nom==='nazorat' ? 'flex' : 'none';
   document.getElementById('ong').style.display = nom==='nazorat' ? 'block' : 'none';
@@ -500,7 +504,51 @@ function bolimKorsat(nom) {
   document.getElementById('boshqaruv').style.display = nom==='boshqaruv' ? 'block' : 'none';
   
   if (nom==='dashboard') dashboardYukla();
-  if (nom==='boshqaruv') bYukla();
+  if (nom==='boshqaruv') boshqaruvTablariniChiz();
+}
+
+// ADMIN UCHUN FAQAT RUXSAT ETILGAN TABLARNI CHIZISH
+function boshqaruvTablariniChiz() {
+  const tabContainer = document.getElementById('bTabsContainer');
+  let tabsHTML = '';
+  
+  const ruxsatlar = SESSIYA.rol === 'superadmin' ? ['xodimlar','adminlar','mfy','kategoriyalar','bildirishnoma','sozlamalar','tahrir','audit'] : SESSIYA.ruxsatlar;
+
+  // Agar admin xodim qo'shish/tahrirlash huquqiga ega bo'lsa
+  if (ruxsatlar.includes('xodim_qosh') || ruxsatlar.includes('xodim_tahrir') || SESSIYA.rol === 'superadmin') {
+    tabsHTML += `<button onclick="bTab('xodimlar',this)">👤 Xodimlar</button>`;
+  }
+  // Adminlar uchun
+  if (SESSIYA.rol === 'superadmin') {
+    tabsHTML += `<button onclick="bTab('adminlar',this)">🔑 Adminlar</button>`;
+  }
+  if (ruxsatlar.includes('mfy_boshqar') || SESSIYA.rol === 'superadmin') {
+    tabsHTML += `<button onclick="bTab('mfy',this)">🏢 Tashkilotlar</button>`;
+  }
+  if (ruxsatlar.includes('kategoriya_boshqar') || SESSIYA.rol === 'superadmin') {
+    tabsHTML += `<button onclick="bTab('kategoriyalar',this)">🏷 Kategoriyalar</button>`;
+  }
+  if (ruxsatlar.includes('eslatma_yuborish') || SESSIYA.rol === 'superadmin') {
+    tabsHTML += `<button onclick="bTab('bildirishnoma',this)">🔔 Bildirishnoma</button>`;
+  }
+  if (ruxsatlar.includes('sozlamalar') || SESSIYA.rol === 'superadmin') {
+    tabsHTML += `<button onclick="bTab('sozlamalar',this)">⚙️ Sozlamalar</button>`;
+  }
+  
+  // Umumiy ko'rinadigan tablar
+  tabsHTML += `<button onclick="bTab('tahrir',this)">✏️ Tahrir so'rovlari</button>`;
+  if (SESSIYA.rol === 'superadmin') {
+    tabsHTML += `<button onclick="bTab('audit',this)">📜 Audit log</button>`;
+  }
+
+  tabContainer.innerHTML = tabsHTML;
+  
+  const birinchiBtn = tabContainer.querySelector('button');
+  if (birinchiBtn) {
+    birinchiBtn.click();
+  } else {
+    document.getElementById('bPanel').innerHTML = '<div class="bosh-holat"><b>Sizga hech qanday boshqaruv huquqi berilmagan</b></div>';
+  }
 }
 
 async function dashboardYukla() {
@@ -702,7 +750,7 @@ function modalOch(id) {
   document.getElementById('modalFon').style.display='flex';
   if (h.b_lat) setTimeout(() => {
     mXarita = L.map('mXarita').setView([+h.b_lat, +h.b_lng], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}'+'{x}/{y}.png', {attribution:'© OSM'}).addTo(mXarita);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(mXarita);
     L.marker([+h.b_lat, +h.b_lng]).addTo(mXarita);
   }, 60);
 }
@@ -738,7 +786,9 @@ async function hammasiExcel() {
 
 function bTab(nom, btn) {
   document.querySelectorAll('.bTabs button').forEach(b => b.classList.remove('aktiv'));
-  btn.classList.add('aktiv'); bJoriy = nom; bYukla();
+  if (btn) btn.classList.add('aktiv'); 
+  bJoriy = nom; 
+  bYukla();
 }
 
 async function bYukla() {
