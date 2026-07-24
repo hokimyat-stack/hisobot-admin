@@ -382,7 +382,8 @@ main{flex:1;display:flex;overflow:hidden;padding:14px;gap:14px}
 </div>
 
 <script>
-let API = 'https://script.google.com/macros/s/AKfycbx-Xasac-UeyYFB9ihgR03IMiw6yHRFPohBAuwk7IeLaiogATxR1Qk7tKo9hhbORASt/exec';
+// ENG OXIRGI DOIMIY API MANZILI
+let API = 'https://script.google.com/macros/s/AKfycbz2orAMZv11nh54RFTBPVgBZTCbwkwq0rd90YMaFXZnbTBkZpYarbDyG4ZyJxtPhC5S/exec';
 let SESSIYA = null;
 let xodimlar = [], mfylar = [], kategoriyalar = [], tanlangan = null, joriyHisobotlar = [], bJoriy = 'xodimlar';
 
@@ -424,7 +425,7 @@ async function apiPost(action, data) {
   return r.json();
 }
 
-// SUPERADMIN LINK ORQALI KIRISHI (Faqat kalit yetarli, chunki API doimiy yozilgan)
+// TUZATILDI: SUPERADMIN UCHUN URL PARAMETRIDAN EMAS, FAQAT KALIT ORQALI TEKSHIRISH (CORS xatosi bartaraf etildi)
 async function superadminUrlTekshir() {
   const params = new URLSearchParams(location.search);
   const kalit = params.get('kalit');
@@ -701,7 +702,7 @@ function modalOch(id) {
   document.getElementById('modalFon').style.display='flex';
   if (h.b_lat) setTimeout(() => {
     mXarita = L.map('mXarita').setView([+h.b_lat, +h.b_lng], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(mXarita);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}'+'{x}/{y}.png', {attribution:'© OSM'}).addTo(mXarita);
     L.marker([+h.b_lat, +h.b_lng]).addTo(mXarita);
   }, 60);
 }
@@ -980,7 +981,6 @@ function adminForma(a) {
   });
 }
 
-// Tashkilot qo'shish formalaridan koordinata maydonlari olib tashlandi
 function mfyForma(t) {
   formaChiz(t ? 'Tashkilotni tahrirlash' : 'Yangi tashkilot', [
     { id:'nomi', label:'Nomi', qiymat:t?.nomi, majburiy:true },
