@@ -265,7 +265,10 @@ main{
 .mGaler{display:flex; gap:12px; overflow-x:auto; margin:16px 0; padding-bottom:10px;}
 .mGaler img{height:160px; max-width: 100%; border-radius:16px; cursor:zoom-in; border:1px solid var(--chiziq); object-fit: cover;}
 .stageBlok .tavsifTxt{background:var(--bg-kard); border-radius:14px; padding:16px; font-size:14px; line-height:1.6; color:var(--text-asosiy); border:1px solid var(--chiziq)}
-#mXarita{width: auto; height: 260px; margin: 0 32px 32px; border-radius: 20px; border: 1px solid var(--chiziq); z-index: 1;}
+
+/* MAP BUG FIX */
+.xarita-wrap { padding: 0 32px 32px; }
+#mXarita{width: 100%; height: 260px; border-radius: 20px; border: 1px solid var(--chiziq); z-index: 1; background: #e5e5e5;}
 
 #zoomFon { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
 #zoomImg { max-width: 90vw; max-height: 90vh; border-radius: 12px; object-fit: contain; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
@@ -288,7 +291,7 @@ main{
 @media(max-width:900px){
   #chap{width:100%; position:absolute; z-index:15; height:calc(100vh - 65px); display:none}
   #chap.ochiq{display:flex}
-  main { padding: 10px; overflow-y:auto;}
+  main { padding: 10px; }
   .jadval{font-size:12px}
 }
 #mobilMenyu{display:none; background:var(--bg-input); border:1px solid var(--chiziq); border-radius:12px; padding:10px 14px; color:var(--text-asosiy)}
@@ -439,7 +442,7 @@ main{
 </div>
 
 <script>
-// SVG ICONS DICTIONARY FOR JS RENDERED BUTTONS
+// SVG ICONS
 const SVG = {
   users: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
   admin: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>`,
@@ -452,7 +455,7 @@ const SVG = {
   plus: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`
 };
 
-// MAVZU (THEME) BOSHQARUVI
+// THEME
 function toggleTheme() {
   const body = document.documentElement;
   const current = body.getAttribute('data-theme');
@@ -471,7 +474,7 @@ window.addEventListener('DOMContentLoaded', () => {
   : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
 });
 
-// API VA ASOSIY MANTIQ
+// API
 let API = 'https://script.google.com/macros/s/AKfycbwBm3VN3DfQD7Tj71zG-opItPnsEqBpgRwv8FVWTTRK2yj6u52v15ldBADTaaXkSBk/exec';
 let SESSIYA = null;
 let xodimlar = [], mfylar = [], kategoriyalar = [], tanlangan = null, joriyHisobotlar = [], bJoriy = '';
@@ -502,13 +505,8 @@ function glassPrompt(sarlavha, defaultVal='', callback, isPrompt=true) {
   btnBekor.onclick = () => { fon.style.display = 'none'; if (callback) callback(null); };
 }
 
-// Rasm URL lari
-const rasmURL = (id, w) => {
-  if (!id) return '';
-  if (String(id).startsWith('http') || String(id).startsWith('data:')) return id;
-  return `https://drive.google.com/thumbnail?id=${id}&sz=w${w||400}`;
-};
-const rasmFullURL = (id) => {
+// BUG FIX: Rasm URL si (Rasmiy ishlash varianti)
+const rasmURL = (id) => {
   if (!id) return '';
   if (String(id).startsWith('http') || String(id).startsWith('data:')) return id;
   return `https://drive.google.com/uc?export=view&id=${id}`;
@@ -563,6 +561,11 @@ async function loginParol() {
 function chiqish() { sessionStorage.removeItem('SESSIYA'); location.href = location.pathname; }
 
 async function boshla() {
+  // BUG FIX: Agar nazoratchi eski kesh bilan mfyId siz qolib ketgan bo'lsa, uni chiqarib yuborish
+  if (SESSIYA.rol === 'nazoratchi' && !SESSIYA.mfyId) {
+      chiqish(); return;
+  }
+
   document.getElementById('loginEkran').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
   
@@ -591,9 +594,11 @@ async function boshla() {
 
   const [m, k] = await Promise.all([api('mfylar'), api('kategoriyalar')]);
   if (m.ok) {
-    if (SESSIYA.mfyId) {
+    // QAT'IY FILTR NAZORATCHILAR UCHUN
+    if (SESSIYA.rol === 'nazoratchi') {
       mfylar = m.mfylar.filter(x => String(x.id) === String(SESSIYA.mfyId));
-      fillSelect('fMfy', mfylar, false); // Barcha tashkilotlar yozuvi chiqmaydi
+      if(mfylar.length === 0) mfylar = [{id: SESSIYA.mfyId, nomi: 'Tashkilot aniqlanmadi'}];
+      fillSelect('fMfy', mfylar, false); // "Barcha tashkilotlar" bo'lmaydi
       document.getElementById('fMfy').disabled = true;
       document.getElementById('fMfy').style.opacity = '0.6';
     } else {
@@ -679,7 +684,7 @@ function dashTab(tur) {
 }
 
 async function dashboardYukla() {
-  document.getElementById('dashSarlavha').textContent = (SESSIYA.rol === 'nazoratchi' || SESSIYA.mfyId) ? 'Sizning tashkilotingiz statistikasi' : 'Umumiy Ko\'rsatkichlar';
+  document.getElementById('dashSarlavha').textContent = (SESSIYA.rol === 'nazoratchi') ? 'Sizning tashkilotingiz statistikasi' : 'Umumiy Ko\'rsatkichlar';
   
   const [rx, rh] = await Promise.all([api('xodimlar'), api('hisobotlar')]);
   if (!rx.ok || !rh.ok) return;
@@ -688,9 +693,11 @@ async function dashboardYukla() {
   let xodims = rx.xodimlar;
   let hisobots = rh.hisobotlar;
 
-  if (SESSIYA.mfyId) {
-    xodims = xodims.filter(x => String(x.mfyId) === String(SESSIYA.mfyId));
-    hisobots = hisobots.filter(h => String(h.mfyId) === String(SESSIYA.mfyId));
+  // QAT'IY FILTR NAZORATCHILAR UCHUN
+  if (SESSIYA.rol === 'nazoratchi') {
+    const myMfy = String(SESSIYA.mfyId);
+    xodims = xodims.filter(x => String(x.mfyId) === myMfy);
+    hisobots = hisobots.filter(h => String(h.mfyId) === myMfy);
   }
 
   const jamiXodim = xodims.length;
@@ -710,7 +717,7 @@ async function dashboardYukla() {
 
   const mfyStat = {};
   mfylar.forEach(m => {
-    if (SESSIYA.mfyId && String(m.id) !== String(SESSIYA.mfyId)) return;
+    if (SESSIYA.rol === 'nazoratchi' && String(m.id) !== String(SESSIYA.mfyId)) return;
     mfyStat[m.id] = { nomi: m.nomi, jami: 0, yuklagan: new Set() };
   });
 
@@ -733,10 +740,11 @@ async function xodimlarYukla() {
     let kelganXodimlar = rx.xodimlar;
     let kelganHisobotlar = rh.ok ? rh.hisobotlar : [];
 
-    // NAZORATCHI UCHUN QAT'IY FILTR
-    if (SESSIYA.mfyId) {
-      kelganXodimlar = kelganXodimlar.filter(x => String(x.mfyId) === String(SESSIYA.mfyId));
-      kelganHisobotlar = kelganHisobotlar.filter(h => String(h.mfyId) === String(SESSIYA.mfyId));
+    // QAT'IY FILTR NAZORATCHILAR UCHUN
+    if (SESSIYA.rol === 'nazoratchi') {
+      const myMfy = String(SESSIYA.mfyId);
+      kelganXodimlar = kelganXodimlar.filter(x => String(x.mfyId) === myMfy);
+      kelganHisobotlar = kelganHisobotlar.filter(h => String(h.mfyId) === myMfy);
     }
 
     xodimlar = kelganXodimlar;
@@ -773,8 +781,7 @@ async function checkNewReports() {
   if(!rh.ok) return;
   let yangiKeldi = false;
   rh.hisobotlar.forEach(h => {
-    // Agar nazoratchi bo'lsa faqat o'zining xisobotlaridan ogohlantirish beradi
-    if(SESSIYA.mfyId && String(h.mfyId) !== String(SESSIYA.mfyId)) return;
+    if (SESSIYA.rol === 'nazoratchi' && String(h.mfyId) !== String(SESSIYA.mfyId)) return;
     if(!fetchedReportIds.has(h.id)) {
       yangiKeldi = true;
       fetchedReportIds.add(h.id);
@@ -867,7 +874,7 @@ function lentaChiz() {
       <div class="tCard ${isNew ? 'unread' : ''}" onclick='modalOch(${JSON.stringify(h.id)})'>
         ${isNew ? '<span class="yangi-badge" style="position:absolute; right:16px; top:16px; margin:0">YANGI</span>' : ''}
         <div class="tTop">
-          ${h.b_rasmlar[0] ? `<img src="${rasmURL(h.b_rasmlar[0],200)}" loading="lazy">` : '<div style="width:60px"></div>'}
+          ${h.b_rasmlar[0] ? `<img src="${rasmURL(h.b_rasmlar[0])}" onerror="this.onerror=null; this.src='https://placehold.co/200x200?text=Rasm';" loading="lazy">` : '<div style="width:60px"></div>'}
           <div class="icim">
             <div class="tur">${h.ishNomi || h.ishTuri}</div>
             <div class="tsh">${h.mfyNomi} · ${h.kategoriyaNomi}</div>
@@ -905,7 +912,7 @@ function modalOch(id) {
       <h4>${nom} <span class="stTag" style="background:var(--yashil-och);color:var(--yashil)">✓ YUKLANGAN</span></h4>
       <div class="meta" style="font-size:12px;color:var(--text-ikkinchi);margin-bottom:10px;">${vaqt}${lat?' · GPS: '+(+lat).toFixed(5)+', '+(+lng).toFixed(5):''}</div>
       <div class="tavsifTxt">${tavsif}</div>
-      <div class="mGaler">${(rasmlar||[]).map(r=>`<img src="${rasmURL(r,400)}" onclick="zoom('${rasmFullURL(r)}')" loading="lazy">`).join('')}</div>
+      <div class="mGaler">${(rasmlar||[]).map(r=>`<img src="${rasmURL(r)}" onerror="this.onerror=null; this.src='https://placehold.co/400x300?text=Rasm';" onclick="zoom('${rasmURL(r)}')" loading="lazy">`).join('')}</div>
     </div>`;
   };
   const m = document.getElementById('modal');
@@ -921,7 +928,7 @@ function modalOch(id) {
       <b>Texnik ma'lumot:</b> GPS Lokatsiya: ${h.b_lat ? (+h.b_lat).toFixed(5)+', '+(+h.b_lng).toFixed(5) : '—'} &nbsp;·&nbsp; Reyting: <b>${h.reyting}</b>
       ${h.flagSabab ? '<br><span style="color:var(--qizil);display:block;margin-top:8px;">⚠ '+h.flagSabab+'</span>' : ''}
     </div>
-    ${h.b_lat ? '<div id="mXarita"></div>' : ''}
+    ${h.b_lat ? '<div class="xarita-wrap"><div id="mXarita"></div></div>' : ''}
   `;
   document.getElementById('modalFon').style.display='flex';
   
@@ -930,10 +937,13 @@ function modalOch(id) {
     mXarita = L.map('mXarita').setView([+h.b_lat, +h.b_lng], 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(mXarita);
     L.marker([+h.b_lat, +h.b_lng]).addTo(mXarita);
+    
+    // BUG FIX: Xarita ochilmay qolishining yechimi - container o'zgarishidan keyin xaritani yangilash
+    setTimeout(() => { if(mXarita) mXarita.invalidateSize(); }, 250); 
   }, 100);
 }
 
-// Modal yopilganda xarita elementini DOM dan to'liq tozalash (Bleed bug oldini oladi)
+// BUG FIX: Modal yopilganda xarita to'liq o'chirilib, DOM tozalanadi
 function modalYop(){ 
   document.getElementById('modalFon').style.display='none'; 
   if(mXarita){ mXarita.remove(); mXarita=null; }
@@ -969,7 +979,7 @@ async function hammasiExcel() {
   const r = await api('hisobotlar');
   if (!r.ok || !r.hisobotlar.length) return toast('Hisobot topilmadi', 'xato');
   let exportData = r.hisobotlar;
-  if(SESSIYA.mfyId) {
+  if(SESSIYA.rol === 'nazoratchi') {
     exportData = exportData.filter(h => String(h.mfyId) === String(SESSIYA.mfyId));
   }
   excelSaqla(exportData.map(hisobotSatr), 'Barcha_hisobotlar_'+new Date().toISOString().slice(0,10));
@@ -990,7 +1000,7 @@ async function bYukla() {
     const r = await api('xodimlar');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
     let sXodimlar = r.xodimlar;
-    if(SESSIYA.mfyId) sXodimlar = sXodimlar.filter(x => String(x.mfyId) === String(SESSIYA.mfyId));
+    if(SESSIYA.rol === 'nazoratchi') sXodimlar = sXodimlar.filter(x => String(x.mfyId) === String(SESSIYA.mfyId));
 
     panel.innerHTML = `<h3>Xodimlar (${sXodimlar.length})</h3>
       <button class="qoshBtn" onclick="xodimForma()">${SVG.plus} Yangi xodim</button>
@@ -1094,7 +1104,6 @@ async function bYukla() {
     const r = await api('tahrirSorovlari');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
     let sSorovlar = r.sorovlar;
-    // Buni backend o'zi cheklashi kerak, lekin xavfsizlik uchun frontend
     panel.innerHTML = `<h3>Tahrir so'rovlari (${sSorovlar.length})</h3>
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>Sana</th><th>Xodim</th><th>Sabab</th><th>Status</th><th>Amallar</th></tr>
@@ -1196,8 +1205,7 @@ function formaChiz(sarlavha, maydonlar, onSaqla) {
 function formaYop(){ document.getElementById('formaFon').style.display='none'; }
 
 function xodimForma(x) {
-  // Yangilik: Faqat ruxsat etilgan tashkilotni ko'rsatish
-  const mfyVariantlar = SESSIYA.mfyId 
+  const mfyVariantlar = SESSIYA.rol === 'nazoratchi' 
     ? mfylar.filter(m => String(m.id) === String(SESSIYA.mfyId)).map(m=>({val:m.id,nom:m.nomi}))
     : [{val:'',nom:'— tanlang —'},...mfylar.map(m=>({val:m.id,nom:m.nomi}))];
 
