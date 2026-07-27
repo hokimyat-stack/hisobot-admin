@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz" data-theme="light">
+<html lang="uz" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,11 +36,11 @@
 
 [data-theme="dark"] {
   /* DARK TEMA */
-  --bg-asosiy: #0D0F14;
+  --bg-asosiy: #0E1015;
   --bg-kard: #1A1D24;
   --bg-kard-shaffof: rgba(26, 29, 36, 0.85);
   --bg-kard-hover: #22262F;
-  --bg-input: #12141A;
+  --bg-input: #13151A;
   --bg-header: rgba(26, 29, 36, 0.75);
   --text-asosiy: #F5F5F7;
   --text-ikkinchi: #98989D;
@@ -50,25 +50,36 @@
   --soya-hover: 0 20px 40px -12px rgba(0,0,0,0.5);
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Plus Jakarta Sans',system-ui,sans-serif;
+/* BUTUN EKRAN SKROLLINI QULFLASH */
+html, body {
+  margin: 0; padding: 0;
+  height: 100vh; width: 100vw;
+  overflow: hidden; /* Muhim: Butun sahifa skrollini to'xtatish */
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system,BlinkMacSystemFont,'SF Pro Display','Plus Jakarta Sans',system-ui,sans-serif;
   background-color: var(--bg-asosiy);
-  color:var(--text-asosiy); font-size:14px; letter-spacing:-0.011em;
-  -webkit-font-smoothing:antialiased;
+  color: var(--text-asosiy); font-size: 14px; letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
 h1,h2,h3,.brand{font-weight:800;letter-spacing:-0.025em}
-button{font-family:inherit;cursor:pointer;border:none;transition:transform .16s cubic-bezier(.2,.8,.2,1),background .18s ease,box-shadow .18s ease,color .18s ease;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer;border:none;transition:transform .16s ease,background .18s ease,box-shadow .18s ease,color .18s ease;-webkit-tap-highlight-color:transparent; display:flex; align-items:center; justify-content:center; gap:8px;}
 button:active{transform:scale(0.96)}
-input,select,textarea{font-family:inherit;outline:none;transition:all .18s ease}
+input,select,textarea{font-family:inherit;outline:none;transition:all .18s ease; box-sizing: border-box;}
 ::selection{background:var(--kok-och)}
 
+/* SKROLL BAR DIZAYNI */
 *{scrollbar-width:thin;scrollbar-color:var(--text-ikkinchi) transparent}
-*::-webkit-scrollbar{width:7px;height:7px}
+*::-webkit-scrollbar{width:6px;height:6px}
 *::-webkit-scrollbar-track{background:transparent}
-*::-webkit-scrollbar-thumb{background:var(--chiziq);border-radius:10px}
-*::-webkit-scrollbar-thumb:hover{background:var(--text-ikkinchi)}
+*::-webkit-scrollbar-thumb{background:rgba(150,150,150,0.3);border-radius:10px}
+*::-webkit-scrollbar-thumb:hover{background:rgba(150,150,150,0.6)}
+
+svg { flex-shrink: 0; }
 
 /* Traffic Lights */
 .trafficLights{display:flex;gap:8px;align-items:center}
@@ -85,10 +96,10 @@ input,select,textarea{font-family:inherit;outline:none;transition:all .18s ease}
   z-index: 1000;
 }
 .loginCard{
-  position:relative; background: var(--bg-kard-shaffof); backdrop-filter:blur(30px) saturate(180%);
+  position:relative; background: var(--bg-kard);
   border-radius:26px; padding:24px 40px 40px; width:min(400px,92vw);
   border:1px solid var(--chiziq-kard); box-shadow: var(--soya-hover);
-  animation:cardIn .5s cubic-bezier(.2,.9,.25,1);
+  animation:cardIn .4s ease;
 }
 @keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 .loginCard .trafficLights{margin-bottom: 20px;}
@@ -96,16 +107,17 @@ input,select,textarea{font-family:inherit;outline:none;transition:all .18s ease}
 .loginCard .sub{color:var(--text-ikkinchi); font-size:13px; margin:4px 0 24px; font-weight:600}
 .loginCard label{display:block; font-weight:700; font-size:11px; margin:16px 0 6px; color:var(--text-ikkinchi); text-transform:uppercase; letter-spacing:0.07em}
 .loginCard input{width:100%; padding:14px 16px; border:1px solid var(--chiziq); border-radius:14px; font-size:14.5px; background:var(--bg-input); color:var(--text-asosiy)}
-.loginCard input:focus{border-color:var(--kok); background:var(--bg-kard); box-shadow:0 0 0 4px var(--kok-och)}
+.loginCard input:focus{border-color:var(--kok); box-shadow:0 0 0 3px var(--kok-och)}
 .loginCard .btn{width:100%; margin-top:28px; background:var(--kok); color:#fff; padding:15px; border-radius:14px; font-weight:700; font-size:15px; box-shadow:0 10px 20px -5px rgba(var(--kok-rgb),0.4)}
 .loginCard .btn:hover{background:#0071E3; transform:translateY(-1px);}
 .loginXato{color:var(--qizil); font-size:13px; margin-top:14px; display:none; background:var(--qizil-och); padding:10px 14px; border-radius:12px; font-weight:600; text-align:center}
 
-/* ASOSIY APP */
-#app{display:none; height:100vh; flex-direction:column}
+/* APP STRUKTURASI */
+#app{display:none; height:100vh; flex-direction:column; overflow:hidden;}
+
 header.top{
-  background: var(--bg-header); backdrop-filter:blur(28px) saturate(180%);
-  border-bottom:1px solid var(--chiziq); padding:0 24px; height:64px; display:flex; align-items:center; gap:16px; z-index:20;
+  background: var(--bg-header); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--chiziq); padding:0 24px; height:64px; display:flex; align-items:center; gap:16px; z-index:20; flex-shrink: 0;
 }
 .top .brand{font-weight:800; color:var(--text-asosiy); font-size:16px; display:flex; flex-direction:column; line-height:1.2}
 .top .brand small{color:var(--text-ikkinchi); font-weight:600; font-size:11px;}
@@ -123,32 +135,45 @@ header.top{
   background: var(--qizil); color: #fff;
   font-size: 10px; font-weight: 800;
   padding: 2px 6px; border-radius: 10px;
-  margin-left: 6px; display: inline-block;
-  vertical-align: middle; box-shadow: 0 2px 6px rgba(255,69,58,0.4);
+  margin-left: 6px; display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(255,69,58,0.4);
 }
 
 .top-amallar { margin-left:auto; display:flex; gap:12px; align-items:center; }
-.theme-btn { background:var(--bg-input); color:var(--text-asosiy); border:1px solid var(--chiziq); width:36px; height:36px; border-radius:50%; font-size:16px; display:flex; align-items:center; justify-content:center; }
+.theme-btn { background:var(--bg-input); color:var(--text-asosiy); border:1px solid var(--chiziq); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
 .theme-btn:hover { background:var(--bg-kard-hover); }
-.top .cta{background:var(--text-asosiy); color:var(--bg-asosiy); border-radius:12px; padding:10px 18px; font-weight:700; font-size:13px;}
-.top .chiqishBtn{background:var(--qizil-och); color:var(--qizil); font-weight:700; font-size:13px; padding:10px 18px; border-radius:12px;}
+.top .cta{background:var(--text-asosiy); color:var(--bg-asosiy); border-radius:12px; padding:9px 16px; font-weight:700; font-size:13px;}
+.top .chiqishBtn{background:var(--qizil-och); color:var(--qizil); font-weight:700; font-size:13px; padding:9px 16px; border-radius:12px; border:1px solid rgba(255,69,58,0.1)}
 
-main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1600px; margin: 0 auto; width: 100%;}
+main{
+  flex:1; display:flex; overflow:hidden; /* Asosiy qism toshib ketmaydi */
+  padding:20px; gap:20px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box;
+}
 
-/* KARDLAR STILI (Chap va O'ng panellar) */
+/* KARDLAR STILI (Faqat shu kardlar ichida skroll bo'ladi) */
 .asosiy-kard {
   background: var(--bg-kard);
   border: 1px solid var(--chiziq-kard);
   border-radius: var(--radius);
   box-shadow: var(--soya-kard);
   display: flex; flex-direction: column;
+  overflow-y: auto; /* Ichki skroll */
+  position: relative;
 }
 
-#chap{ width:340px; }
-#chap .qidiruv{padding:20px; border-bottom:1px solid var(--chiziq); display:flex; flex-direction:column; gap:10px}
-#chap .qidiruv input,#chap .qidiruv select{width:100%; padding:12px 14px; border:1px solid var(--chiziq); border-radius:12px; font-size:13px; background:var(--bg-input); color:var(--text-asosiy)}
-#chap .qidiruv input:focus,#chap .qidiruv select:focus{border-color:var(--kok); box-shadow:0 0 0 3px var(--kok-och); background:var(--bg-kard)}
-#xodimlarList{flex:1; overflow-y:auto; padding:12px}
+#chap{ width:340px; flex-shrink: 0;}
+#chap .qidiruv{padding:20px; border-bottom:1px solid var(--chiziq); display:flex; flex-direction:column; gap:12px; position: sticky; top: 0; background: var(--bg-kard); z-index: 10;}
+#chap .qidiruv input, #chap .qidiruv select{
+  width:100%; padding:12px 14px; border:1px solid var(--chiziq); border-radius:12px; font-size:13px; background:var(--bg-input); color:var(--text-asosiy);
+}
+/* Select uchun maxsus strelka (Vektor) */
+#chap .qidiruv select {
+  appearance: none; -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="none" stroke="%2386868B" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>');
+  background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 36px;
+}
+#chap .qidiruv input:focus, #chap .qidiruv select:focus{border-color:var(--kok); box-shadow:0 0 0 3px var(--kok-och);}
+#xodimlarList{flex:1; padding:12px;}
 .xodimRow{padding:12px; border-radius:14px; margin-bottom:6px; cursor:pointer; display:flex; gap:12px; align-items:center; border:1px solid transparent; background:transparent}
 .xodimRow:hover{background:var(--bg-kard-hover)}
 .xodimRow.aktiv{background:var(--kok-och); border-color:var(--kok); border-left: 4px solid var(--kok);}
@@ -158,10 +183,10 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
 .nuqta.flag{background:var(--qizil); box-shadow:0 0 0 3px var(--qizil-och)}
 .xodimRow .fio{font-weight:700; font-size:14px; color:var(--text-asosiy)}
 .xodimRow .meta{color:var(--text-ikkinchi); font-size:11.5px; margin-top:2px; font-weight:500}
-.xodimRow .son{margin-left:auto; background:var(--bg-input); border-radius:14px; padding:6px 12px; font-size:12px; font-weight:800; color:var(--text-asosiy); display:flex; align-items:center; gap:6px;}
+.xodimRow .son{margin-left:auto; background:var(--bg-input); border-radius:14px; padding:6px 10px; font-size:12px; font-weight:800; color:var(--text-asosiy); display:flex; align-items:center; gap:6px;}
 
-#ong, #dashboardPanel, #boshqaruv { flex:1; overflow-y:auto; padding:30px; display:none; }
-.bosh-holat{text-align:center; color:var(--text-ikkinchi); margin-top:15vh; line-height:1.6; font-size: 15px;}
+#ong, #dashboardPanel, #boshqaruv { flex:1; padding:30px; display:none; }
+.bosh-holat{text-align:center; color:var(--text-ikkinchi); margin-top:20vh; line-height:1.6; font-size: 15px;}
 .bosh-holat b{font-size:22px; color:var(--text-asosiy); display:block; margin-bottom:8px;}
 
 /* Filtr va O'ng Panel */
@@ -204,7 +229,7 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
 
 /* Dashboard & Boshqaruv Panel */
 .bTabs{display:flex; gap:6px; margin-bottom:24px; flex-wrap:wrap; background:var(--bg-input); padding:6px; border-radius:16px; width: fit-content;}
-.bTabs button{background:transparent; border-radius:12px; padding:12px 20px; font-weight:700; font-size:14px; color:var(--text-ikkinchi)}
+.bTabs button{background:transparent; border-radius:12px; padding:10px 18px; font-weight:700; font-size:14px; color:var(--text-ikkinchi)}
 .bTabs button.aktiv{background:var(--bg-kard); color:var(--text-asosiy); box-shadow:0 4px 12px rgba(0,0,0,0.08)}
 .bPanel h3{font-size:20px; color:var(--text-asosiy); font-weight:800;}
 .bPanel .izoh{color:var(--text-ikkinchi); font-size:14px; margin:6px 0 24px; font-weight:500}
@@ -221,20 +246,20 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
 .jadval td{padding:16px; border-bottom:1px solid var(--chiziq); color:var(--text-asosiy)}
 .jadval tr:hover td{background:var(--bg-kard-hover)}
 
-.mini{border-radius:10px; padding:8px 14px; font-size:12px; font-weight:700; margin:2px; display:inline-block; border: none;}
+.mini{border-radius:10px; padding:8px 14px; font-size:12px; font-weight:700; margin:2px; display:inline-flex; align-items:center; border: none; gap:6px;}
 .mini.kok{background:var(--kok-och); color:var(--kok)}
 .mini.qizil{background:var(--qizil-och); color:var(--qizil)}
 .mini.yashil{background:var(--yashil-och); color:var(--yashil)}
 .mini.kul{background:var(--chiziq); color:var(--text-asosiy)}
-.qoshBtn{background:var(--kok); color:#fff; border-radius:14px; padding:12px 24px; font-weight:700; font-size:14px; margin-bottom:24px; display: inline-block;}
+.qoshBtn{background:var(--kok); color:#fff; border-radius:14px; padding:12px 24px; font-weight:700; font-size:14px; margin-bottom:24px; display: inline-flex;}
 .holatTag{font-size:12px; font-weight:800; border-radius:20px; padding:6px 14px}
 .holatTag.faol{background:var(--yashil-och); color:var(--yashil)}
 .holatTag.blok{background:var(--qizil-och); color:var(--qizil)}
 
 /* Modallar */
-#formaFon, #modalFon, #customModalFon{position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; z-index:100; padding:20px}
-#forma, #customModal{background:var(--bg-kard); border-radius:24px; width:min(500px, 100%); padding:32px; box-shadow:var(--soya-hover); border:1px solid var(--chiziq-kard);}
-#modal{background:var(--bg-kard); border-radius:24px; width:min(900px, 100%); max-height:90vh; overflow-y:auto; box-shadow:var(--soya-hover); border:1px solid var(--chiziq-kard);}
+#formaFon, #modalFon, #customModalFon{position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; z-index:999; padding:20px}
+#forma, #customModal{background:var(--bg-kard); border-radius:24px; width:min(500px, 100%); padding:32px; box-shadow:var(--soya-hover); border:1px solid var(--chiziq-kard); max-height: 90vh; overflow-y:auto;}
+#modal{background:var(--bg-kard); border-radius:24px; width:min(900px, 100%); max-height:90vh; overflow-y:auto; box-shadow:var(--soya-hover); border:1px solid var(--chiziq-kard); display:flex; flex-direction:column;}
 
 #forma h3, #modal h3{font-size:22px; color:var(--text-asosiy); margin-bottom:20px;}
 #forma label{display:block; font-weight:700; font-size:12px; margin:16px 0 8px; color:var(--text-ikkinchi);}
@@ -252,17 +277,29 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
 .stageBlok{margin:20px 32px; background:var(--bg-input); border-radius:20px; padding:24px; border:1px solid var(--chiziq-kard)}
 .stageBlok h4{font-size:16px; color:var(--text-asosiy); display:flex; align-items:center; gap:12px; margin-bottom:12px;}
 .stageBlok .stTag{font-size:11px; padding:6px 14px; border-radius:20px;}
-.mGaler{display:flex; gap:12px; overflow-x:auto; margin:16px 0}
-.mGaler img{height:160px; border-radius:16px; cursor:zoom-in; border:1px solid var(--chiziq);}
+.mGaler{display:flex; gap:12px; overflow-x:auto; margin:16px 0; padding-bottom:10px;}
+.mGaler img{height:160px; max-width: 100%; border-radius:16px; cursor:zoom-in; border:1px solid var(--chiziq); object-fit: cover;}
 .stageBlok .tavsifTxt{background:var(--bg-kard); border-radius:14px; padding:16px; font-size:14px; line-height:1.6; color:var(--text-asosiy); border:1px solid var(--chiziq)}
-#mXarita{height:240px; margin:0 32px 32px; border-radius:20px; border:1px solid var(--chiziq);}
+/* Xarita cheklovlari */
+#mXarita{width: auto; height: 260px; margin: 0 32px 32px; border-radius: 20px; border: 1px solid var(--chiziq); z-index: 1;}
+
+/* ZUM (Rasmni kattalashtirish) */
+#zoomFon { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+#zoomImg { max-width: 90vw; max-height: 90vh; border-radius: 12px; object-fit: contain; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+
+/* Custom Modal uchun to'g'irlash */
+#customModal { display: flex; flex-direction: column; gap: 16px; width: 400px; }
+#customModal h4 { font-size: 16px; color: var(--text-asosiy); margin:0; }
+#cmInput { width: 100%; padding: 12px; box-sizing: border-box; }
+.cmAmallar { display: flex; gap: 12px; margin-top: 10px; justify-content: flex-end; }
+.cmAmallar button { padding: 12px 20px; border-radius: 12px; font-weight: 700; }
 
 /* Loader & Toast */
 .yuklanmoqda{text-align:center; padding:60px; color:var(--text-ikkinchi); font-weight:600; font-size:15px;}
 .spinner{width:36px; height:36px; border:3px solid var(--chiziq); border-top-color:var(--kok); border-radius:50%; margin:0 auto 16px; animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-.toast{background:var(--bg-kard); padding:16px 24px; border-radius:16px; box-shadow:var(--soya-hover); display:flex; align-items:center; gap:16px; font-weight:700; font-size:14px; color:var(--text-asosiy); border:1px solid var(--chiziq-kard);}
+.toast{background:var(--bg-kard); padding:16px 24px; border-radius:16px; box-shadow:var(--soya-hover); display:flex; align-items:center; gap:16px; font-weight:700; font-size:14px; color:var(--text-asosiy); border:1px solid var(--chiziq-kard); z-index: 9999;}
 .toast.muvaffaqiyat{border-left:4px solid var(--yashil)}
 .toast.xato{border-left:4px solid var(--qizil)}
 .toast.info{border-left:4px solid var(--kok)}
@@ -279,7 +316,7 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
 </head>
 <body>
 
-<div id="toastContainer"></div>
+<div id="toastContainer" style="position:fixed;top:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:9px;"></div>
 
 <div id="loginEkran">
   <div class="loginCard">
@@ -297,18 +334,32 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
 
 <div id="app">
   <header class="top">
-    <button id="mobilMenyu" onclick="document.getElementById('chap').classList.toggle('ochiq')">☰</button>
+    <button id="mobilMenyu" onclick="document.getElementById('chap').classList.toggle('ochiq')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    </button>
     <div class="brand">KUNLIK HISOBOT<small id="brandSub">Nazorat Platformasi</small></div>
     <span class="rolBadge" id="rolBadge"></span>
     <nav class="navTabs" id="navTabs" style="display:none">
-      <button id="navDashboard" class="aktiv" onclick="bolimKorsat('dashboard')">Dashboard</button>
-      <button id="navNazorat" onclick="bolimKorsat('nazorat')">Nazorat <span id="mainBadge" class="yangi-badge" style="display:none;">0</span></button>
-      <button id="navBoshqaruv" onclick="bolimKorsat('boshqaruv')" style="display:none">Boshqaruv</button>
+      <button id="navDashboard" class="aktiv" onclick="bolimKorsat('dashboard')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg> Dashboard
+      </button>
+      <button id="navNazorat" onclick="bolimKorsat('nazorat')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Nazorat <span id="mainBadge" class="yangi-badge" style="display:none;">0</span>
+      </button>
+      <button id="navBoshqaruv" onclick="bolimKorsat('boshqaruv')" style="display:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Boshqaruv
+      </button>
     </nav>
     <div class="top-amallar">
-      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()" title="Tungi/Kunduzgi rejim">🌙</button>
-      <button class="cta" onclick="hammasiExcel()">⬇ Excel</button>
-      <button class="chiqishBtn" onclick="chiqish()">Chiqish</button>
+      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()" title="Tungi/Kunduzgi rejim">
+        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+      <button class="cta" onclick="hammasiExcel()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Excel
+      </button>
+      <button class="chiqishBtn" onclick="chiqish()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Chiqish
+      </button>
     </div>
   </header>
 
@@ -319,14 +370,17 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
         <select id="fMfy" onchange="xodimlarChiz()"><option value="">Barcha tashkilotlar</option></select>
         <select id="fKategoriya" onchange="xodimlarChiz()"><option value="">Barcha kategoriya</option></select>
       </div>
-      <div id="xodimlarList"><div class="yuklanmoqda"><div class="spinner"></div>Yuklanmoqda...</div></div>
-      <div class="eslatmaPanel" id="eslatmaPanel" style="display:none; padding:16px;">
-        <button class="cta" style="width:100%" onclick="guruhEslatma()">🔔 Eslatma yuborish</button>
+      <div id="xodimlarList"><div class="yuklanmoqda"><div class="spinner"></div>Kuting...</div></div>
+      <div class="eslatmaPanel" id="eslatmaPanel" style="display:none; padding:16px; margin-top:auto; border-top:1px solid var(--chiziq);">
+        <button class="cta" style="width:100%" onclick="guruhEslatma()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Eslatma yuborish
+        </button>
       </div>
     </aside>
 
     <section id="ong" class="asosiy-kard" style="display:none;">
       <div class="bosh-holat" id="boshHolat">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-ikkinchi)" stroke-width="1" style="margin-bottom:16px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         <b>Xodimni tanlang</b>
         Chap paneldan xodim tanlansa, uning barcha hisobotlari<br>shu yerda ko'rinadi
       </div>
@@ -336,7 +390,9 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
           <div class="filtr">
             <input type="date" id="fDan"> <span style="color:var(--text-ikkinchi)">—</span> <input type="date" id="fGacha">
             <button onclick="lentaYukla()">Filtrlash</button>
-            <button class="excel" onclick="xodimExcel()">⬇ Excel</button>
+            <button class="excel" onclick="xodimExcel()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Excel
+            </button>
           </div>
         </div>
         <div id="lenta"></div>
@@ -385,14 +441,15 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
   </main>
 </div>
 
+<!-- MODALS -->
 <div id="modalFon" onclick="if(event.target===this)modalYop()"><div id="modal"></div></div>
 <div id="zoomFon" onclick="this.style.display='none'"><img id="zoomImg"></div>
 <div id="formaFon" onclick="if(event.target===this)formaYop()"><div id="forma"></div></div>
 
 <div id="customModalFon">
   <div id="customModal">
-    <h4 id="cmSarlavha"></h4>
-    <input id="cmInput" type="text" style="display:none; margin-top:16px;">
+    <h4 id="cmSarlavha">Sarlavha</h4>
+    <input id="cmInput" type="text" style="display:none;">
     <div class="cmAmallar">
       <button class="bekorB" id="cmBekorBtn">Bekor qilish</button>
       <button class="saqlaB" id="cmTasdiqBtn">Tasdiqlash</button>
@@ -401,6 +458,19 @@ main{flex:1; display:flex; overflow:hidden; padding:20px; gap:20px; max-width: 1
 </div>
 
 <script>
+// SVG ICONS DICTIONARY FOR JS RENDERED BUTTONS
+const SVG = {
+  users: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  admin: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>`,
+  building: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22"/><line x1="15" y1="22" x2="15" y2="22"/><line x1="9" y1="6" x2="9" y2="6"/><line x1="15" y1="6" x2="15" y2="6"/><line x1="9" y1="10" x2="9" y2="10"/><line x1="15" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="9" y2="14"/><line x1="15" y1="14" x2="15" y2="14"/><line x1="9" y1="18" x2="9" y2="18"/><line x1="15" y1="18" x2="15" y2="18"/></svg>`,
+  tags: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+  bell: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+  settings: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+  edit: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  audit: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  plus: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`
+};
+
 // MAVZU (THEME) BOSHQARUVI
 function toggleTheme() {
   const body = document.documentElement;
@@ -408,14 +478,17 @@ function toggleTheme() {
   const next = current === 'dark' ? 'light' : 'dark';
   body.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
-  document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeIcon').innerHTML = next === 'dark' 
+    ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+    : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
 }
-const savedTheme = localStorage.getItem('theme') || 'light';
+const savedTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.setAttribute('data-theme', savedTheme);
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeIcon').innerHTML = savedTheme === 'dark' 
+  ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+  : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
 });
-
 
 // API VA ASOSIY MANTIQ
 let API = 'https://script.google.com/macros/s/AKfycbwBm3VN3DfQD7Tj71zG-opItPnsEqBpgRwv8FVWTTRK2yj6u52v15ldBADTaaXkSBk/exec';
@@ -423,9 +496,8 @@ let SESSIYA = null;
 let xodimlar = [], mfylar = [], kategoriyalar = [], tanlangan = null, joriyHisobotlar = [], bJoriy = '';
 let dashYuklagan = [], dashYuklamagan = [];
 
-// Yangilik: O'qilgan (ko'rilgan) xisobotlar idlarini saqlash
 let seenReports = new Set();
-let fetchedReportIds = new Set(); // Bildirishnoma uchun
+let fetchedReportIds = new Set();
 
 function toast(matn, turi='muvaffaqiyat') {
   const c = document.getElementById('toastContainer');
@@ -449,9 +521,16 @@ function glassPrompt(sarlavha, defaultVal='', callback, isPrompt=true) {
   btnBekor.onclick = () => { fon.style.display = 'none'; if (callback) callback(null); };
 }
 
+// Rasm URL lari
 const rasmURL = (id, w) => {
+  if (!id) return '';
   if (String(id).startsWith('http') || String(id).startsWith('data:')) return id;
   return `https://drive.google.com/thumbnail?id=${id}&sz=w${w||400}`;
+};
+const rasmFullURL = (id) => {
+  if (!id) return '';
+  if (String(id).startsWith('http') || String(id).startsWith('data:')) return id;
+  return `https://drive.google.com/uc?export=view&id=${id}`;
 };
 
 async function api(action, params={}) {
@@ -512,7 +591,6 @@ async function boshla() {
   badge.className = 'rolBadge ' + SESSIYA.rol;
   document.getElementById('brandSub').textContent = SESSIYA.fio;
   
-  // Lokal xotiradan o'qilganlarni tiklash
   seenReports = new Set(JSON.parse(localStorage.getItem('SEEN_REPS_' + SESSIYA.kalit) || '[]'));
   
   document.getElementById('navTabs').style.display = 'flex';
@@ -520,7 +598,7 @@ async function boshla() {
   if (SESSIYA.rol === 'nazoratchi') {
     document.getElementById('navBoshqaruv').style.display = 'none';
   } else {
-    document.getElementById('navBoshqaruv').style.display = 'inline-block';
+    document.getElementById('navBoshqaruv').style.display = 'inline-flex';
   }
 
   if (SESSIYA.rol !== 'nazoratchi') document.getElementById('eslatmaPanel').style.display = 'block';
@@ -537,7 +615,6 @@ async function boshla() {
   bolimKorsat('dashboard');
   await xodimlarYukla();
 
-  // Yangi xisobotlarni har 1 daqiqada tekshirib turish
   setInterval(checkNewReports, 60000);
 }
 
@@ -554,9 +631,9 @@ function bolimKorsat(nom) {
   if(navBosh) navBosh.classList.toggle('aktiv', nom==='boshqaruv');
   
   document.getElementById('chap').style.display = nom==='nazorat' ? 'flex' : 'none';
-  document.getElementById('ong').style.display = nom==='nazorat' ? 'flex' : 'none';
-  document.getElementById('dashboardPanel').style.display = nom==='dashboard' ? 'flex' : 'none';
-  document.getElementById('boshqaruv').style.display = nom==='boshqaruv' ? 'flex' : 'none';
+  document.getElementById('ong').style.display = nom==='nazorat' ? 'block' : 'none';
+  document.getElementById('dashboardPanel').style.display = nom==='dashboard' ? 'block' : 'none';
+  document.getElementById('boshqaruv').style.display = nom==='boshqaruv' ? 'block' : 'none';
   
   if (nom==='dashboard') dashboardYukla();
   if (nom==='boshqaruv') boshqaruvTablariniChiz();
@@ -567,14 +644,14 @@ function boshqaruvTablariniChiz() {
   let tabsHTML = '';
   const ruxsatlar = SESSIYA.rol === 'superadmin' ? ['xodimlar','adminlar','mfy','kategoriyalar','bildirishnoma','sozlamalar','tahrir','audit'] : SESSIYA.ruxsatlar;
 
-  if (ruxsatlar.includes('xodim_qosh') || ruxsatlar.includes('xodim_tahrir') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('xodimlar',this)">👤 Xodimlar</button>`;
-  if (SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('adminlar',this)">🔑 Adminlar</button>`;
-  if (ruxsatlar.includes('mfy_boshqar') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('mfy',this)">🏢 Tashkilotlar</button>`;
-  if (ruxsatlar.includes('kategoriya_boshqar') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('kategoriyalar',this)">🏷 Kategoriyalar</button>`;
-  if (ruxsatlar.includes('eslatma_yuborish') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('bildirishnoma',this)">🔔 Bildirishnoma</button>`;
-  if (ruxsatlar.includes('sozlamalar') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('sozlamalar',this)">⚙️ Sozlamalar</button>`;
-  tabsHTML += `<button onclick="bTab('tahrir',this)">✏️ Tahrir so'rovlari</button>`;
-  if (SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('audit',this)">📜 Audit log</button>`;
+  if (ruxsatlar.includes('xodim_qosh') || ruxsatlar.includes('xodim_tahrir') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('xodimlar',this)">${SVG.users} Xodimlar</button>`;
+  if (SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('adminlar',this)">${SVG.admin} Adminlar</button>`;
+  if (ruxsatlar.includes('mfy_boshqar') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('mfy',this)">${SVG.building} Tashkilotlar</button>`;
+  if (ruxsatlar.includes('kategoriya_boshqar') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('kategoriyalar',this)">${SVG.tags} Kategoriyalar</button>`;
+  if (ruxsatlar.includes('eslatma_yuborish') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('bildirishnoma',this)">${SVG.bell} Bildirishnoma</button>`;
+  if (ruxsatlar.includes('sozlamalar') || SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('sozlamalar',this)">${SVG.settings} Sozlamalar</button>`;
+  tabsHTML += `<button onclick="bTab('tahrir',this)">${SVG.edit} Tahrir so'rovlari</button>`;
+  if (SESSIYA.rol === 'superadmin') tabsHTML += `<button onclick="bTab('audit',this)">${SVG.audit} Audit</button>`;
 
   tabContainer.innerHTML = tabsHTML;
   const birinchiBtn = tabContainer.querySelector('button');
@@ -665,7 +742,6 @@ async function xodimlarYukla() {
     xodimlar = rx.xodimlar;
     let jamiOqilmagan = 0;
 
-    // Bildirishnoma bazasini yaratish
     if (fetchedReportIds.size === 0 && rh.ok && rh.hisobotlar) {
       rh.hisobotlar.forEach(h => fetchedReportIds.add(h.id));
     }
@@ -675,17 +751,15 @@ async function xodimlarYukla() {
         const xHisobotlari = rh.hisobotlar.filter(h => String(h.xodimId) === String(x.id));
         x.soni = xHisobotlari.length;
         x.bugunBor = xHisobotlari.some(h => h.sana === new Date().toISOString().slice(0,10));
-        // O'qilmagan xisobotlar sonini hisoblash
         x.unread = xHisobotlari.filter(h => !seenReports.has(h.id)).length;
         jamiOqilmagan += x.unread;
       });
     }
 
-    // Tepada "Nazorat" yozuvi yoniga uomumiy belgi qo'yish
     const mBadge = document.getElementById('mainBadge');
     if (jamiOqilmagan > 0) {
       mBadge.textContent = jamiOqilmagan;
-      mBadge.style.display = 'inline-block';
+      mBadge.style.display = 'inline-flex';
     } else {
       mBadge.style.display = 'none';
     }
@@ -694,7 +768,6 @@ async function xodimlarYukla() {
   }
 }
 
-// Avtomatik tekshiruvchi funksiya (Bildirishnoma)
 async function checkNewReports() {
   const rh = await api('hisobotlar');
   if(!rh.ok) return;
@@ -759,7 +832,7 @@ async function xodimTanla(id) {
 
 async function lentaYukla() {
   const lenta = document.getElementById('lenta');
-  lenta.innerHTML = '<div class="yuklanmoqda"><div class="spinner"></div>Yuklanmoqda...</div>';
+  lenta.innerHTML = '<div class="yuklanmoqda"><div class="spinner"></div>Kuting...</div>';
   const params = { xodim: tanlangan.id };
   const dan = document.getElementById('fDan').value, gacha = document.getElementById('fGacha').value;
   if (dan) params.dan = dan; if (gacha) params.gacha = gacha;
@@ -784,7 +857,7 @@ function lentaChiz() {
       oldingiOy = oy;
     }
     const vaqt = (h.b_vaqt||'').slice(11,16);
-    const isNew = !seenReports.has(h.id); // O'qilmaganligini tekshirish
+    const isNew = !seenReports.has(h.id);
 
     html += `<div class="tRow">
       <div class="tChap"><b>${h.sana.slice(8)}-${OYLAR[+h.sana.slice(5,7)-1].toLowerCase().slice(0,3)}</b>${h.haftaKuni||''}<br>${vaqt}</div>
@@ -811,13 +884,13 @@ function lentaChiz() {
   lenta.innerHTML = html;
 }
 
+// XARITA VA MODAL MUAMMOSINI HAL QILISH
 let mXarita = null;
+
 function modalOch(id) {
-  // Xisobot ochilganda uni o'qilganlar ro'yxatiga qo'shamiz
   if(!seenReports.has(id)) {
     seenReports.add(id);
     localStorage.setItem('SEEN_REPS_' + SESSIYA.kalit, JSON.stringify([...seenReports]));
-    // Ekranda sonlarni darhol yangilab qo'yish
     xodimlarYukla();
     lentaChiz();
   }
@@ -830,14 +903,14 @@ function modalOch(id) {
       <h4>${nom} <span class="stTag" style="background:var(--yashil-och);color:var(--yashil)">✓ YUKLANGAN</span></h4>
       <div class="meta" style="font-size:12px;color:var(--text-ikkinchi);margin-bottom:10px;">${vaqt}${lat?' · GPS: '+(+lat).toFixed(5)+', '+(+lng).toFixed(5):''}</div>
       <div class="tavsifTxt">${tavsif}</div>
-      <div class="mGaler">${(rasmlar||[]).map(r=>`<img src="${rasmURL(r,500)}" onclick="zoom('${rasmURL(r,1500)}')" loading="lazy">`).join('')}</div>
+      <div class="mGaler">${(rasmlar||[]).map(r=>`<img src="${rasmURL(r,400)}" onclick="zoom('${rasmFullURL(r)}')" loading="lazy">`).join('')}</div>
     </div>`;
   };
   const m = document.getElementById('modal');
   m.innerHTML = `
     <div class="mBosh">
       <div><h3>${h.ishNomi || h.ishTuri}</h3><div class="mSub">${h.xodimFio} · ${h.mfyNomi} · ${h.kategoriyaNomi}</div></div>
-      <button class="yop" onclick="modalYop()">✕</button>
+      <button class="yop" onclick="modalYop()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     ${stage('1. Boshlandi', h.b_vaqt, h.b_tavsif, h.b_lat, h.b_lng, h.b_rasmlar)}
     ${stage('2. Davom etmoqda', h.d_vaqt, h.d_tavsif, h.d_lat, h.d_lng, h.d_rasmlar)}
@@ -849,15 +922,26 @@ function modalOch(id) {
     ${h.b_lat ? '<div id="mXarita"></div>' : ''}
   `;
   document.getElementById('modalFon').style.display='flex';
+  
   if (h.b_lat) setTimeout(() => {
+    if(mXarita) { mXarita.remove(); mXarita = null; }
     mXarita = L.map('mXarita').setView([+h.b_lat, +h.b_lng], 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(mXarita);
     L.marker([+h.b_lat, +h.b_lng]).addTo(mXarita);
-  }, 60);
+  }, 100);
 }
 
-function modalYop(){ document.getElementById('modalFon').style.display='none'; if(mXarita){mXarita.remove();mXarita=null;} }
-function zoom(url){ document.getElementById('zoomImg').src=url; document.getElementById('zoomFon').style.display='flex'; }
+// Modal yopilganda xarita elementini DOM dan to'liq tozalash (Bleed bug oldini oladi)
+function modalYop(){ 
+  document.getElementById('modalFon').style.display='none'; 
+  if(mXarita){ mXarita.remove(); mXarita=null; }
+  document.getElementById('modal').innerHTML = ''; 
+}
+
+function zoom(url){ 
+  document.getElementById('zoomImg').src = url; 
+  document.getElementById('zoomFon').style.display='flex'; 
+}
 
 function hisobotSatr(h) {
   return {
@@ -900,7 +984,7 @@ async function bYukla() {
     const r = await api('xodimlar');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
     panel.innerHTML = `<h3>Xodimlar (${r.xodimlar.length})</h3>
-      <button class="qoshBtn" onclick="xodimForma()">＋ Yangi xodim</button>
+      <button class="qoshBtn" onclick="xodimForma()">${SVG.plus} Yangi xodim</button>
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>FIO</th><th>PINFL</th><th>Tashkilot</th><th>Kategoriya</th><th>Qurilma</th><th>Holat</th><th>Amallar</th></tr>
         ${r.xodimlar.map(x => `<tr>
@@ -922,7 +1006,7 @@ async function bYukla() {
     const r = await api('adminlar');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
     panel.innerHTML = `<h3>Adminlar (${r.adminlar.length})</h3>
-      <button class="qoshBtn" onclick="adminForma()">＋ Yangi admin</button>
+      <button class="qoshBtn" onclick="adminForma()">${SVG.plus} Yangi admin</button>
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>FIO</th><th>Rol</th><th>Tashkilot</th><th>Login</th><th>Holat</th><th>Amallar</th></tr>
         ${r.adminlar.map(a => `<tr>
@@ -945,7 +1029,7 @@ async function bYukla() {
     const r = await api('mfylar');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
     panel.innerHTML = `<h3>Tashkilotlar (${r.mfylar.length})</h3>
-      <button class="qoshBtn" onclick="mfyForma()">＋ Yangi tashkilot</button>
+      <button class="qoshBtn" onclick="mfyForma()">${SVG.plus} Yangi tashkilot</button>
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>Nomi</th><th>Rahbar</th><th>Telefon</th><th>Amallar</th></tr>
         ${r.mfylar.map(t => `<tr>
@@ -962,7 +1046,7 @@ async function bYukla() {
     const r = await api('kategoriyalar');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
     panel.innerHTML = `<h3>Kategoriyalar (${r.kategoriyalar.length})</h3>
-      <button class="qoshBtn" onclick="kategoriyaForma()">＋ Yangi kategoriya</button>
+      <button class="qoshBtn" onclick="kategoriyaForma()">${SVG.plus} Yangi kategoriya</button>
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>Nomi</th><th>Tavsif</th><th>Amallar</th></tr>
         ${r.kategoriyalar.map(k => `<tr>
