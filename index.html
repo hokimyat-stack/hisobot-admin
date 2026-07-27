@@ -10,7 +10,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ZAMONAVIY DARK/LIGHT TEMA O'ZGARUVCHILARI */
 :root {
   --kok: #0A84FF; --kok-och: rgba(10,132,255,0.15); --kok-rgb: 10,132,255;
   --yashil: #30D158; --yashil-och: rgba(48,209,88,0.15);
@@ -18,7 +17,6 @@
   --qizil: #FF453A; --qizil-och: rgba(255,69,58,0.15);
   --binafsha: #BF5AF2;
 
-  /* LIGHT TEMA */
   --bg-asosiy: #F2F4F7;
   --bg-kard: #FFFFFF;
   --bg-kard-shaffof: rgba(255, 255, 255, 0.85);
@@ -35,7 +33,6 @@
 }
 
 [data-theme="dark"] {
-  /* DARK TEMA */
   --bg-asosiy: #0E1015;
   --bg-kard: #1A1D24;
   --bg-kard-shaffof: rgba(26, 29, 36, 0.85);
@@ -50,11 +47,10 @@
   --soya-hover: 0 20px 40px -12px rgba(0,0,0,0.5);
 }
 
-/* BUTUN EKRAN SKROLLINI QULFLASH */
 html, body {
   margin: 0; padding: 0;
   height: 100vh; width: 100vw;
-  overflow: hidden; /* Muhim: Butun sahifa skrollini to'xtatish */
+  overflow: hidden;
   box-sizing: border-box;
 }
 
@@ -72,7 +68,6 @@ button:active{transform:scale(0.96)}
 input,select,textarea{font-family:inherit;outline:none;transition:all .18s ease; box-sizing: border-box;}
 ::selection{background:var(--kok-och)}
 
-/* SKROLL BAR DIZAYNI */
 *{scrollbar-width:thin;scrollbar-color:var(--text-ikkinchi) transparent}
 *::-webkit-scrollbar{width:6px;height:6px}
 *::-webkit-scrollbar-track{background:transparent}
@@ -81,7 +76,6 @@ input,select,textarea{font-family:inherit;outline:none;transition:all .18s ease;
 
 svg { flex-shrink: 0; }
 
-/* Traffic Lights */
 .trafficLights{display:flex;gap:8px;align-items:center}
 .trafficLights span{width:12px;height:12px;border-radius:50%;display:block;position:relative;box-shadow:inset 0 0 0 0.5px rgba(0,0,0,0.12), 0 0.5px 0.5px rgba(255,255,255,0.4)}
 .trafficLights span::after{content:'';position:absolute;inset:2px;border-radius:50%;background:radial-gradient(circle at 32% 28%, rgba(255,255,255,0.85), transparent 60%)}
@@ -89,7 +83,6 @@ svg { flex-shrink: 0; }
 .trafficLights .tl-yellow{background:#FEBC2E}
 .trafficLights .tl-green{background:#28C840}
 
-/* LOGIN EKRAN */
 #loginEkran{
   position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;
   background-color: var(--bg-asosiy);
@@ -112,7 +105,6 @@ svg { flex-shrink: 0; }
 .loginCard .btn:hover{background:#0071E3; transform:translateY(-1px);}
 .loginXato{color:var(--qizil); font-size:13px; margin-top:14px; display:none; background:var(--qizil-och); padding:10px 14px; border-radius:12px; font-weight:600; text-align:center}
 
-/* APP STRUKTURASI */
 #app{display:none; height:100vh; flex-direction:column; overflow:hidden;}
 
 header.top{
@@ -130,7 +122,6 @@ header.top{
 .navTabs button{background:transparent; border-radius:8px; padding:8px 16px; font-weight:700; font-size:13px; color:var(--text-ikkinchi); position:relative;}
 .navTabs button.aktiv{background:var(--bg-kard); color:var(--text-asosiy); box-shadow:0 2px 6px rgba(0,0,0,0.06)}
 
-/* O'qilmaganlar nishoni (Badge) */
 .yangi-badge {
   background: var(--qizil); color: #fff;
   font-size: 10px; font-weight: 800;
@@ -146,18 +137,17 @@ header.top{
 .top .chiqishBtn{background:var(--qizil-och); color:var(--qizil); font-weight:700; font-size:13px; padding:9px 16px; border-radius:12px; border:1px solid rgba(255,69,58,0.1)}
 
 main{
-  flex:1; display:flex; overflow:hidden; /* Asosiy qism toshib ketmaydi */
+  flex:1; display:flex; overflow:hidden;
   padding:20px; gap:20px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box;
 }
 
-/* KARDLAR STILI (Faqat shu kardlar ichida skroll bo'ladi) */
 .asosiy-kard {
   background: var(--bg-kard);
   border: 1px solid var(--chiziq-kard);
   border-radius: var(--radius);
   box-shadow: var(--soya-kard);
   display: flex; flex-direction: column;
-  overflow-y: auto; /* Ichki skroll */
+  overflow-y: auto; 
   position: relative;
 }
 
@@ -166,7 +156,6 @@ main{
 #chap .qidiruv input, #chap .qidiruv select{
   width:100%; padding:12px 14px; border:1px solid var(--chiziq); border-radius:12px; font-size:13px; background:var(--bg-input); color:var(--text-asosiy);
 }
-/* Select uchun maxsus strelka (Vektor) */
 #chap .qidiruv select {
   appearance: none; -webkit-appearance: none;
   background-image: url('data:image/svg+xml;utf8,<svg fill="none" stroke="%2386868B" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>');
@@ -189,7 +178,6 @@ main{
 .bosh-holat{text-align:center; color:var(--text-ikkinchi); margin-top:20vh; line-height:1.6; font-size: 15px;}
 .bosh-holat b{font-size:22px; color:var(--text-asosiy); display:block; margin-bottom:8px;}
 
-/* Filtr va O'ng Panel */
 .bosh{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--chiziq)}
 .bosh h2{font-size:22px; color:var(--text-asosiy);}
 .filtr{display:flex; gap:10px; align-items:center;}
@@ -198,7 +186,6 @@ main{
 .filtr button:hover{background:var(--bg-kard-hover)}
 .filtr button.excel{background:var(--yashil); color:#fff; border:none;}
 
-/* Lenta (Timeline) */
 .oySarlavha{font-weight:800; font-size:12px; color:var(--text-ikkinchi); letter-spacing:0.05em; text-transform:uppercase; margin:30px 0 16px; display:flex; align-items:center; gap:16px}
 .oySarlavha::after{content:''; flex:1; height:1px; background:var(--chiziq)}
 .tRow{display:flex; position:relative}
@@ -227,7 +214,6 @@ main{
 .badge{font-size:12px; font-weight:800; border-radius:30px; padding:6px 14px;}
 .badge.kech{background:var(--qizil-och); color:var(--qizil);}
 
-/* Dashboard & Boshqaruv Panel */
 .bTabs{display:flex; gap:6px; margin-bottom:24px; flex-wrap:wrap; background:var(--bg-input); padding:6px; border-radius:16px; width: fit-content;}
 .bTabs button{background:transparent; border-radius:12px; padding:10px 18px; font-weight:700; font-size:14px; color:var(--text-ikkinchi)}
 .bTabs button.aktiv{background:var(--bg-kard); color:var(--text-asosiy); box-shadow:0 4px 12px rgba(0,0,0,0.08)}
@@ -256,7 +242,6 @@ main{
 .holatTag.faol{background:var(--yashil-och); color:var(--yashil)}
 .holatTag.blok{background:var(--qizil-och); color:var(--qizil)}
 
-/* Modallar */
 #formaFon, #modalFon, #customModalFon{position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; z-index:999; padding:20px}
 #forma, #customModal{background:var(--bg-kard); border-radius:24px; width:min(500px, 100%); padding:32px; box-shadow:var(--soya-hover); border:1px solid var(--chiziq-kard); max-height: 90vh; overflow-y:auto;}
 #modal{background:var(--bg-kard); border-radius:24px; width:min(900px, 100%); max-height:90vh; overflow-y:auto; box-shadow:var(--soya-hover); border:1px solid var(--chiziq-kard); display:flex; flex-direction:column;}
@@ -272,7 +257,7 @@ main{
 
 #modal .mBosh{display:flex; justify-content:space-between; align-items:flex-start; padding:32px 32px 0}
 #modal .mSub{color:var(--text-ikkinchi); font-size:14px; margin-top:8px;}
-#modal .yop{background:var(--bg-input); border-radius:12px; width:40px; height:40px; font-size:16px; color:var(--text-asosiy); display:flex; align-items:center; justify-content:center;}
+#modal .yop{background:var(--bg-input); border-radius:12px; width:40px; height:40px; font-size:16px; color:var(--text-asosiy); display:flex; align-items:center; justify-content:center; flex-shrink: 0;}
 #modal .yop:hover{background:var(--qizil-och); color:var(--qizil)}
 .stageBlok{margin:20px 32px; background:var(--bg-input); border-radius:20px; padding:24px; border:1px solid var(--chiziq-kard)}
 .stageBlok h4{font-size:16px; color:var(--text-asosiy); display:flex; align-items:center; gap:12px; margin-bottom:12px;}
@@ -280,21 +265,17 @@ main{
 .mGaler{display:flex; gap:12px; overflow-x:auto; margin:16px 0; padding-bottom:10px;}
 .mGaler img{height:160px; max-width: 100%; border-radius:16px; cursor:zoom-in; border:1px solid var(--chiziq); object-fit: cover;}
 .stageBlok .tavsifTxt{background:var(--bg-kard); border-radius:14px; padding:16px; font-size:14px; line-height:1.6; color:var(--text-asosiy); border:1px solid var(--chiziq)}
-/* Xarita cheklovlari */
 #mXarita{width: auto; height: 260px; margin: 0 32px 32px; border-radius: 20px; border: 1px solid var(--chiziq); z-index: 1;}
 
-/* ZUM (Rasmni kattalashtirish) */
 #zoomFon { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
 #zoomImg { max-width: 90vw; max-height: 90vh; border-radius: 12px; object-fit: contain; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
 
-/* Custom Modal uchun to'g'irlash */
 #customModal { display: flex; flex-direction: column; gap: 16px; width: 400px; }
 #customModal h4 { font-size: 16px; color: var(--text-asosiy); margin:0; }
 #cmInput { width: 100%; padding: 12px; box-sizing: border-box; }
 .cmAmallar { display: flex; gap: 12px; margin-top: 10px; justify-content: flex-end; }
-.cmAmallar button { padding: 12px 20px; border-radius: 12px; font-weight: 700; }
+.cmAmallar button { padding: 12px 20px; border-radius: 12px; font-weight: 700; flex:none;}
 
-/* Loader & Toast */
 .yuklanmoqda{text-align:center; padding:60px; color:var(--text-ikkinchi); font-weight:600; font-size:15px;}
 .spinner{width:36px; height:36px; border:3px solid var(--chiziq); border-top-color:var(--kok); border-radius:50%; margin:0 auto 16px; animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -307,7 +288,7 @@ main{
 @media(max-width:900px){
   #chap{width:100%; position:absolute; z-index:15; height:calc(100vh - 65px); display:none}
   #chap.ochiq{display:flex}
-  main { padding: 10px; }
+  main { padding: 10px; overflow-y:auto;}
   .jadval{font-size:12px}
 }
 #mobilMenyu{display:none; background:var(--bg-input); border:1px solid var(--chiziq); border-radius:12px; padding:10px 14px; color:var(--text-asosiy)}
@@ -609,7 +590,17 @@ async function boshla() {
   document.getElementById('dashboardPanel').style.display = 'flex';
 
   const [m, k] = await Promise.all([api('mfylar'), api('kategoriyalar')]);
-  if (m.ok) { mfylar = m.mfylar; fillSelect('fMfy', mfylar, true); }
+  if (m.ok) {
+    if (SESSIYA.mfyId) {
+      mfylar = m.mfylar.filter(x => String(x.id) === String(SESSIYA.mfyId));
+      fillSelect('fMfy', mfylar, false); // Barcha tashkilotlar yozuvi chiqmaydi
+      document.getElementById('fMfy').disabled = true;
+      document.getElementById('fMfy').style.opacity = '0.6';
+    } else {
+      mfylar = m.mfylar;
+      fillSelect('fMfy', mfylar, true);
+    }
+  }
   if (k.ok) { kategoriyalar = k.kategoriyalar; fillSelect('fKategoriya', kategoriyalar, true); }
   
   bolimKorsat('dashboard');
@@ -688,7 +679,7 @@ function dashTab(tur) {
 }
 
 async function dashboardYukla() {
-  document.getElementById('dashSarlavha').textContent = SESSIYA.rol === 'nazoratchi' ? 'Sizning tashkilotingiz statistikasi' : 'Umumiy Ko\'rsatkichlar';
+  document.getElementById('dashSarlavha').textContent = (SESSIYA.rol === 'nazoratchi' || SESSIYA.mfyId) ? 'Sizning tashkilotingiz statistikasi' : 'Umumiy Ko\'rsatkichlar';
   
   const [rx, rh] = await Promise.all([api('xodimlar'), api('hisobotlar')]);
   if (!rx.ok || !rh.ok) return;
@@ -697,7 +688,7 @@ async function dashboardYukla() {
   let xodims = rx.xodimlar;
   let hisobots = rh.hisobotlar;
 
-  if (SESSIYA.rol === 'nazoratchi' && SESSIYA.mfyId) {
+  if (SESSIYA.mfyId) {
     xodims = xodims.filter(x => String(x.mfyId) === String(SESSIYA.mfyId));
     hisobots = hisobots.filter(h => String(h.mfyId) === String(SESSIYA.mfyId));
   }
@@ -719,7 +710,7 @@ async function dashboardYukla() {
 
   const mfyStat = {};
   mfylar.forEach(m => {
-    if (SESSIYA.rol === 'nazoratchi' && String(m.id) !== String(SESSIYA.mfyId)) return;
+    if (SESSIYA.mfyId && String(m.id) !== String(SESSIYA.mfyId)) return;
     mfyStat[m.id] = { nomi: m.nomi, jami: 0, yuklagan: new Set() };
   });
 
@@ -739,16 +730,25 @@ async function dashboardYukla() {
 async function xodimlarYukla() {
   const [rx, rh] = await Promise.all([api('xodimlar'), api('hisobotlar')]);
   if (rx.ok) {
-    xodimlar = rx.xodimlar;
-    let jamiOqilmagan = 0;
+    let kelganXodimlar = rx.xodimlar;
+    let kelganHisobotlar = rh.ok ? rh.hisobotlar : [];
 
-    if (fetchedReportIds.size === 0 && rh.ok && rh.hisobotlar) {
-      rh.hisobotlar.forEach(h => fetchedReportIds.add(h.id));
+    // NAZORATCHI UCHUN QAT'IY FILTR
+    if (SESSIYA.mfyId) {
+      kelganXodimlar = kelganXodimlar.filter(x => String(x.mfyId) === String(SESSIYA.mfyId));
+      kelganHisobotlar = kelganHisobotlar.filter(h => String(h.mfyId) === String(SESSIYA.mfyId));
     }
 
-    if (rh.ok && rh.hisobotlar) {
+    xodimlar = kelganXodimlar;
+    let jamiOqilmagan = 0;
+
+    if (fetchedReportIds.size === 0 && kelganHisobotlar.length > 0) {
+      kelganHisobotlar.forEach(h => fetchedReportIds.add(h.id));
+    }
+
+    if (kelganHisobotlar.length > 0) {
       xodimlar.forEach(x => {
-        const xHisobotlari = rh.hisobotlar.filter(h => String(h.xodimId) === String(x.id));
+        const xHisobotlari = kelganHisobotlar.filter(h => String(h.xodimId) === String(x.id));
         x.soni = xHisobotlari.length;
         x.bugunBor = xHisobotlari.some(h => h.sana === new Date().toISOString().slice(0,10));
         x.unread = xHisobotlari.filter(h => !seenReports.has(h.id)).length;
@@ -773,6 +773,8 @@ async function checkNewReports() {
   if(!rh.ok) return;
   let yangiKeldi = false;
   rh.hisobotlar.forEach(h => {
+    // Agar nazoratchi bo'lsa faqat o'zining xisobotlaridan ogohlantirish beradi
+    if(SESSIYA.mfyId && String(h.mfyId) !== String(SESSIYA.mfyId)) return;
     if(!fetchedReportIds.has(h.id)) {
       yangiKeldi = true;
       fetchedReportIds.add(h.id);
@@ -966,7 +968,11 @@ function xodimExcel() {
 async function hammasiExcel() {
   const r = await api('hisobotlar');
   if (!r.ok || !r.hisobotlar.length) return toast('Hisobot topilmadi', 'xato');
-  excelSaqla(r.hisobotlar.map(hisobotSatr), 'Barcha_hisobotlar_'+new Date().toISOString().slice(0,10));
+  let exportData = r.hisobotlar;
+  if(SESSIYA.mfyId) {
+    exportData = exportData.filter(h => String(h.mfyId) === String(SESSIYA.mfyId));
+  }
+  excelSaqla(exportData.map(hisobotSatr), 'Barcha_hisobotlar_'+new Date().toISOString().slice(0,10));
 }
 
 function bTab(nom, btn) {
@@ -983,11 +989,14 @@ async function bYukla() {
   if (bJoriy === 'xodimlar') {
     const r = await api('xodimlar');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
-    panel.innerHTML = `<h3>Xodimlar (${r.xodimlar.length})</h3>
+    let sXodimlar = r.xodimlar;
+    if(SESSIYA.mfyId) sXodimlar = sXodimlar.filter(x => String(x.mfyId) === String(SESSIYA.mfyId));
+
+    panel.innerHTML = `<h3>Xodimlar (${sXodimlar.length})</h3>
       <button class="qoshBtn" onclick="xodimForma()">${SVG.plus} Yangi xodim</button>
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>FIO</th><th>PINFL</th><th>Tashkilot</th><th>Kategoriya</th><th>Qurilma</th><th>Holat</th><th>Amallar</th></tr>
-        ${r.xodimlar.map(x => `<tr>
+        ${sXodimlar.map(x => `<tr>
           <td><b>${x.fio}</b></td>
           <td style="font-family:monospace;font-size:11px">${x.pinfl||''}</td>
           <td>${x.mfyNomi||'—'}</td><td>${x.kategoriyaNomi||'—'}</td>
@@ -1084,10 +1093,12 @@ async function bYukla() {
   if (bJoriy === 'tahrir') {
     const r = await api('tahrirSorovlari');
     if (!r.ok) return panel.innerHTML = 'Xato: ' + r.xato;
-    panel.innerHTML = `<h3>Tahrir so'rovlari (${r.sorovlar.length})</h3>
+    let sSorovlar = r.sorovlar;
+    // Buni backend o'zi cheklashi kerak, lekin xavfsizlik uchun frontend
+    panel.innerHTML = `<h3>Tahrir so'rovlari (${sSorovlar.length})</h3>
       <div style="overflow-x:auto"><table class="jadval">
         <tr><th>Sana</th><th>Xodim</th><th>Sabab</th><th>Status</th><th>Amallar</th></tr>
-        ${r.sorovlar.map(s => `<tr>
+        ${sSorovlar.map(s => `<tr>
           <td style="white-space:nowrap;font-size:11px">${s.sana}</td>
           <td><b>${s.xodimFio}</b></td><td>${s.sabab}</td>
           <td><span class="mini ${s.status==='KUTILMOQDA'?'kul':s.status==='RUXSAT_BERILDI'?'yashil':'qizil'}">${s.status}</span></td>
@@ -1185,12 +1196,17 @@ function formaChiz(sarlavha, maydonlar, onSaqla) {
 function formaYop(){ document.getElementById('formaFon').style.display='none'; }
 
 function xodimForma(x) {
+  // Yangilik: Faqat ruxsat etilgan tashkilotni ko'rsatish
+  const mfyVariantlar = SESSIYA.mfyId 
+    ? mfylar.filter(m => String(m.id) === String(SESSIYA.mfyId)).map(m=>({val:m.id,nom:m.nomi}))
+    : [{val:'',nom:'— tanlang —'},...mfylar.map(m=>({val:m.id,nom:m.nomi}))];
+
   formaChiz(x ? 'Xodimni tahrirlash' : 'Yangi xodim', [
     { id:'fio', label:'F.I.Sh.', qiymat:x?.fio, majburiy:true },
     { id:'pinfl', label:'PINFL (14 raqam)', qiymat:x?.pinfl, majburiy:!x },
     { id:'parol', label: x?"Yangi parol (bo'sh = o'zgarmaydi)":'Parol', qiymat:'', majburiy:!x },
     { id:'tel', label:'Telefon', qiymat:x?.tel },
-    { id:'mfyId', label:'Tashkilot', turi:'select', qiymat:x?.mfyId, variantlar:[{val:'',nom:'— tanlang —'},...mfylar.map(m=>({val:m.id,nom:m.nomi}))] },
+    { id:'mfyId', label:'Tashkilot', turi:'select', qiymat:x?.mfyId || SESSIYA.mfyId, variantlar: mfyVariantlar },
     { id:'kategoriyaId', label:'Kategoriya', turi:'select', qiymat:x?.kategoriyaId, variantlar:[{val:'',nom:'— tanlang —'},...kategoriyalar.map(k=>({val:k.id,nom:k.nomi}))] }
   ], async (q) => {
     const r = x ? await apiPost('xodimTahrir', { xodimId:x.id, ...q }) : await apiPost('xodimQosh', q);
