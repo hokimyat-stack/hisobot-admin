@@ -266,7 +266,6 @@ main{
 .mGaler img{height:160px; max-width: 100%; border-radius:16px; cursor:zoom-in; border:1px solid var(--chiziq); object-fit: cover;}
 .stageBlok .tavsifTxt{background:var(--bg-kard); border-radius:14px; padding:16px; font-size:14px; line-height:1.6; color:var(--text-asosiy); border:1px solid var(--chiziq)}
 
-/* MAP BUG FIX */
 .xarita-wrap { padding: 0 32px 32px; }
 #mXarita{width: 100%; height: 260px; border-radius: 20px; border: 1px solid var(--chiziq); z-index: 1; background: #e5e5e5;}
 
@@ -291,7 +290,7 @@ main{
 @media(max-width:900px){
   #chap{width:100%; position:absolute; z-index:15; height:calc(100vh - 65px); display:none}
   #chap.ochiq{display:flex}
-  main { padding: 10px; }
+  main { padding: 10px; overflow-y:auto;}
   .jadval{font-size:12px}
 }
 #mobilMenyu{display:none; background:var(--bg-input); border:1px solid var(--chiziq); border-radius:12px; padding:10px 14px; color:var(--text-asosiy)}
@@ -505,11 +504,16 @@ function glassPrompt(sarlavha, defaultVal='', callback, isPrompt=true) {
   btnBekor.onclick = () => { fon.style.display = 'none'; if (callback) callback(null); };
 }
 
-// BUG FIX: Rasm URL si (Rasmiy ishlash varianti)
-const rasmURL = (id) => {
+// BARQAROR RASM URL'LARI (xatosiz ishlashi uchun)
+const rasmURL = (id, w=800) => {
   if (!id) return '';
   if (String(id).startsWith('http') || String(id).startsWith('data:')) return id;
-  return `https://drive.google.com/uc?export=view&id=${id}`;
+  return `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
+};
+const rasmFullURL = (id) => {
+  if (!id) return '';
+  if (String(id).startsWith('http') || String(id).startsWith('data:')) return id;
+  return `https://drive.google.com/file/d/${id}/view`;
 };
 
 async function api(action, params={}) {
@@ -561,7 +565,6 @@ async function loginParol() {
 function chiqish() { sessionStorage.removeItem('SESSIYA'); location.href = location.pathname; }
 
 async function boshla() {
-  // BUG FIX: Agar nazoratchi eski kesh bilan mfyId siz qolib ketgan bo'lsa, uni chiqarib yuborish
   if (SESSIYA.rol === 'nazoratchi' && !SESSIYA.mfyId) {
       chiqish(); return;
   }
@@ -594,11 +597,10 @@ async function boshla() {
 
   const [m, k] = await Promise.all([api('mfylar'), api('kategoriyalar')]);
   if (m.ok) {
-    // QAT'IY FILTR NAZORATCHILAR UCHUN
     if (SESSIYA.rol === 'nazoratchi') {
       mfylar = m.mfylar.filter(x => String(x.id) === String(SESSIYA.mfyId));
       if(mfylar.length === 0) mfylar = [{id: SESSIYA.mfyId, nomi: 'Tashkilot aniqlanmadi'}];
-      fillSelect('fMfy', mfylar, false); // "Barcha tashkilotlar" bo'lmaydi
+      fillSelect('fMfy', mfylar, false);
       document.getElementById('fMfy').disabled = true;
       document.getElementById('fMfy').style.opacity = '0.6';
     } else {
@@ -693,7 +695,6 @@ async function dashboardYukla() {
   let xodims = rx.xodimlar;
   let hisobots = rh.hisobotlar;
 
-  // QAT'IY FILTR NAZORATCHILAR UCHUN
   if (SESSIYA.rol === 'nazoratchi') {
     const myMfy = String(SESSIYA.mfyId);
     xodims = xodims.filter(x => String(x.mfyId) === myMfy);
@@ -740,7 +741,6 @@ async function xodimlarYukla() {
     let kelganXodimlar = rx.xodimlar;
     let kelganHisobotlar = rh.ok ? rh.hisobotlar : [];
 
-    // QAT'IY FILTR NAZORATCHILAR UCHUN
     if (SESSIYA.rol === 'nazoratchi') {
       const myMfy = String(SESSIYA.mfyId);
       kelganXodimlar = kelganXodimlar.filter(x => String(x.mfyId) === myMfy);
@@ -868,13 +868,14 @@ function lentaChiz() {
     const vaqt = (h.b_vaqt||'').slice(11,16);
     const isNew = !seenReports.has(h.id);
 
+    // Kichik ro'yxat uchun rasm
     html += `<div class="tRow">
       <div class="tChap"><b>${h.sana.slice(8)}-${OYLAR[+h.sana.slice(5,7)-1].toLowerCase().slice(0,3)}</b>${h.haftaKuni||''}<br>${vaqt}</div>
       <div class="tSpine"><div class="tNode ${h.reyting}"></div></div>
       <div class="tCard ${isNew ? 'unread' : ''}" onclick='modalOch(${JSON.stringify(h.id)})'>
         ${isNew ? '<span class="yangi-badge" style="position:absolute; right:16px; top:16px; margin:0">YANGI</span>' : ''}
         <div class="tTop">
-          ${h.b_rasmlar[0] ? `<img src="${rasmURL(h.b_rasmlar[0])}" onerror="this.onerror=null; this.src='https://placehold.co/200x200?text=Rasm';" loading="lazy">` : '<div style="width:60px"></div>'}
+          ${h.b_rasmlar[0] ? `<img src="${rasmURL(h.b_rasmlar[0], 200)}" loading="lazy">` : '<div style="width:60px"></div>'}
           <div class="icim">
             <div class="tur">${h.ishNomi || h.ishTuri}</div>
             <div class="tsh">${h.mfyNomi} · ${h.kategoriyaNomi}</div>
@@ -893,7 +894,6 @@ function lentaChiz() {
   lenta.innerHTML = html;
 }
 
-// XARITA VA MODAL MUAMMOSINI HAL QILISH
 let mXarita = null;
 
 function modalOch(id) {
@@ -912,7 +912,7 @@ function modalOch(id) {
       <h4>${nom} <span class="stTag" style="background:var(--yashil-och);color:var(--yashil)">✓ YUKLANGAN</span></h4>
       <div class="meta" style="font-size:12px;color:var(--text-ikkinchi);margin-bottom:10px;">${vaqt}${lat?' · GPS: '+(+lat).toFixed(5)+', '+(+lng).toFixed(5):''}</div>
       <div class="tavsifTxt">${tavsif}</div>
-      <div class="mGaler">${(rasmlar||[]).map(r=>`<img src="${rasmURL(r)}" onerror="this.onerror=null; this.src='https://placehold.co/400x300?text=Rasm';" onclick="zoom('${rasmURL(r)}')" loading="lazy">`).join('')}</div>
+      <div class="mGaler">${(rasmlar||[]).map(r=>`<img src="${rasmURL(r, 600)}" onclick="zoom('${rasmFullURL(r)}')" loading="lazy">`).join('')}</div>
     </div>`;
   };
   const m = document.getElementById('modal');
@@ -937,13 +937,10 @@ function modalOch(id) {
     mXarita = L.map('mXarita').setView([+h.b_lat, +h.b_lng], 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(mXarita);
     L.marker([+h.b_lat, +h.b_lng]).addTo(mXarita);
-    
-    // BUG FIX: Xarita ochilmay qolishining yechimi - container o'zgarishidan keyin xaritani yangilash
     setTimeout(() => { if(mXarita) mXarita.invalidateSize(); }, 250); 
   }, 100);
 }
 
-// BUG FIX: Modal yopilganda xarita to'liq o'chirilib, DOM tozalanadi
 function modalYop(){ 
   document.getElementById('modalFon').style.display='none'; 
   if(mXarita){ mXarita.remove(); mXarita=null; }
@@ -1262,7 +1259,7 @@ function kategoriyaForma(k) {
     const r = k ? await apiPost('kategoriyaTahrir', { kategoriyaId:k.id, ...q }) : await apiPost('kategoriyaQosh', q);
     if (r.ok) { 
       formaYop(); 
-      const yk = await api('kategoriyalar'); if(yk.ok) { kategoriyalar = yk.kategoriyalar; fillSelect('fKategoriya', kategoriyalar, true); }
+      const yk = await api('kategoriyalar'); if(yk.ok) { kategoriyalar = yk.kategoriyalar; fillSelect('fKategoriya', true); }
       bYukla(); toast("Saqlandi!"); 
     } else toast('Xato', 'xato');
   });
